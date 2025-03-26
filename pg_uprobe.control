@@ -1,0 +1,5 @@
+# pg_uprobe extension
+comment = 'Measure postgres functions execution time'
+default_version = '1.0'
+module_pathname = '$libdir/pg_uprobe'
+relocatable = true

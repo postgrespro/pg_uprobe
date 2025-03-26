@@ -1,0 +1,1856 @@
+{
+    "type": "array",
+    "default": [],
+    "title": "Root Schema",
+    "items": {
+      "type": "object",
+      "default": {},
+      "title": "A Schema",
+      "required": [
+        "parsingTime",
+        "planningTime",
+        "LWLockPlanning",
+        "explain",
+        "executionEvents",
+        "executionTime",
+        "executorNodeStatInPlan",
+        "exprNodeStat"
+      ],
+      "properties": {
+        "parsingTime": {
+          "type": "string",
+          "default": "",
+          "title": "parsing time",
+          "examples": [
+            "72821 nanosec"
+          ]
+        },
+        "planningTime": {
+          "type": "string",
+          "default": "",
+          "title": "planning time",
+          "examples": [
+            "884161 nanosec"
+          ]
+        },
+        "planType": {
+          "type": "string",
+          "default": "",
+          "title": "plan type (generic or custom)",
+          "examples": [
+            "custom"
+          ]
+        },
+        "params": {
+          "type": "string",
+          "default": "",
+          "title": "params for prepared plan",
+          "examples": [
+            ""
+          ]
+        },
+        "LWLockPlanning": {
+          "type": "object",
+          "default": {},
+          "title": "LWLock stat for shared buffers",
+          "required": [
+            "info",
+            "stat"
+          ],
+          "properties": {
+            "info": {
+              "type": "string",
+              "default": "",
+              "title": "The info Schema",
+              "examples": [
+                "Buffer locks usage for planning"
+              ]
+            },
+            "stat": {
+              "type": "array",
+              "default": [],
+              "title": "The stat Schema",
+              "items": {
+                "type": "object",
+                "default": {},
+                "title": "A Schema",
+                "required": [
+                  "bufferTag",
+                  "exclusive",
+                  "shared"
+                ],
+                "properties": {
+                  "bufferTag": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The bufferTag Schema",
+                    "required": [
+                      "spcOid",
+                      "spcName",
+                      "dbOid",
+                      "dbName",
+                      "relNumber",
+                      "relName",
+                      "relKind",
+                      "forkName",
+                      "blockNumber"
+                    ],
+                    "properties": {
+                      "spcOid": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The spcOid Schema",
+                        "examples": [
+                          1663
+                        ]
+                      },
+                      "spcName": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The spcName Schema",
+                        "examples": [
+                          "pg_default"
+                        ]
+                      },
+                      "dbOid": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The dbOid Schema",
+                        "examples": [
+                          5
+                        ]
+                      },
+                      "dbName": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The dbName Schema",
+                        "examples": [
+                          "postgres"
+                        ]
+                      },
+                      "relNumber": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The relNumber Schema",
+                        "examples": [
+                          2662
+                        ]
+                      },
+                      "relName": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The relName Schema",
+                        "examples": [
+                          "pg_catalog.pg_class_oid_index"
+                        ]
+                      },
+                      "relKind": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The relKind Schema",
+                        "examples": [
+                          "i"
+                        ]
+                      },
+                      "forkName": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The forkName Schema",
+                        "examples": [
+                          "main"
+                        ]
+                      },
+                      "blockNumber": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The blockNumber Schema",
+                        "examples": [
+                          3
+                        ]
+                      }
+                    },
+                    "examples": [
+                      {
+                        "spcOid": 1663,
+                        "spcName": "pg_default",
+                        "dbOid": 5,
+                        "dbName": "postgres",
+                        "relNumber": 2662,
+                        "relName": "pg_catalog.pg_class_oid_index",
+                        "relKind": "i",
+                        "forkName": "main",
+                        "blockNumber": 3
+                      }
+                    ]
+                  },
+                  "exclusive": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The exclusive Schema",
+                    "required": [
+                      "totalCalls",
+                      "sleepCount",
+                      "sleepTimeSum",
+                      "maxSleepTime"
+                    ],
+                    "properties": {
+                      "totalCalls": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The totalCalls Schema",
+                        "examples": [
+                          0
+                        ]
+                      },
+                      "sleepCount": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The sleepCount Schema",
+                        "examples": [
+                          0
+                        ]
+                      },
+                      "sleepTimeSum": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The sleepTimeSum Schema",
+                        "examples": [
+                          "0 nanosec"
+                        ]
+                      },
+                      "maxSleepTime": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The maxSleepTime Schema",
+                        "examples": [
+                          "0 nanosec"
+                        ]
+                      }
+                    },
+                    "examples": [
+                      {
+                        "totalCalls": 0,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      }
+                    ]
+                  },
+                  "shared": {
+                    "type": "object",
+                    "default": {},
+                    "title": "The shared Schema",
+                    "required": [
+                      "totalCalls",
+                      "sleepCount",
+                      "sleepTimeSum",
+                      "maxSleepTime"
+                    ],
+                    "properties": {
+                      "totalCalls": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The totalCalls Schema",
+                        "examples": [
+                          5
+                        ]
+                      },
+                      "sleepCount": {
+                        "type": "integer",
+                        "default": 0,
+                        "title": "The sleepCount Schema",
+                        "examples": [
+                          0
+                        ]
+                      },
+                      "sleepTimeSum": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The sleepTimeSum Schema",
+                        "examples": [
+                          "0 nanosec"
+                        ]
+                      },
+                      "maxSleepTime": {
+                        "type": "string",
+                        "default": "",
+                        "title": "The maxSleepTime Schema",
+                        "examples": [
+                          "0 nanosec"
+                        ]
+                      }
+                    },
+                    "examples": [
+                      {
+                        "totalCalls": 5,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      }
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "bufferTag": {
+                      "spcOid": 1663,
+                      "spcName": "pg_default",
+                      "dbOid": 5,
+                      "dbName": "postgres",
+                      "relNumber": 2662,
+                      "relName": "pg_catalog.pg_class_oid_index",
+                      "relKind": "i",
+                      "forkName": "main",
+                      "blockNumber": 3
+                    },
+                    "exclusive": {
+                      "totalCalls": 0,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    },
+                    "shared": {
+                      "totalCalls": 5,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    }
+                  }
+                ]
+              },
+              "examples": [
+                [
+                  {
+                    "bufferTag": {
+                      "spcOid": 1663,
+                      "spcName": "pg_default",
+                      "dbOid": 5,
+                      "dbName": "postgres",
+                      "relNumber": 2662,
+                      "relName": "pg_catalog.pg_class_oid_index",
+                      "relKind": "i",
+                      "forkName": "main",
+                      "blockNumber": 3
+                    },
+                    "exclusive": {
+                      "totalCalls": 0,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    },
+                    "shared": {
+                      "totalCalls": 5,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    }
+                  }
+                ]
+              ]
+            }
+          },
+          "examples": [
+            {
+              "info": "Buffer locks usage for planning",
+              "stat": [
+                {
+                  "bufferTag": {
+                    "spcOid": 1663,
+                    "spcName": "pg_default",
+                    "dbOid": 5,
+                    "dbName": "postgres",
+                    "relNumber": 2662,
+                    "relName": "pg_catalog.pg_class_oid_index",
+                    "relKind": "i",
+                    "forkName": "main",
+                    "blockNumber": 3
+                  },
+                  "exclusive": {
+                    "totalCalls": 0,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  },
+                  "shared": {
+                    "totalCalls": 5,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "explain": {
+          "type": "object",
+          "default": {},
+          "title": "Explan for this query",
+          "required": [],
+          "properties": {},
+          "examples": [
+            {
+              "Query Text": "select * from pg_extension;",
+              "Plan": {},
+              "Settings": {}
+            }
+          ]
+        },
+        "executionEvents": {
+          "type": "array",
+          "default": [],
+          "title": "events during execution",
+          "items": {
+            "type": "object",
+            "default": {},
+            "title": "execution event",
+            "required": [
+              "node",
+              "executeTime"
+            ],
+            "properties": {
+              "node": {
+                "type": "string",
+                "default": "",
+                "title": "The node Schema",
+                "examples": [
+                  "ScanState"
+                ]
+              },
+              "explain": {
+                "type": "object",
+                "default": {},
+                "title": "The explain Schema",
+                "required": [],
+                "properties": {},
+                "examples": [
+                  {}
+                ]
+              },
+              "executeTime": {
+                "type": "string",
+                "default": "",
+                "title": "The executeTime Schema",
+                "examples": [
+                  "32256 nanosec"
+                ]
+              },
+              "LWLockStat": {
+                "type": "array",
+                "default": [],
+                "title": "The LWLockStat Schema",
+                "items": {
+                  "type": "object",
+                  "default": {},
+                  "title": "A Schema",
+                  "required": [
+                    "bufferTag",
+                    "exclusive",
+                    "shared"
+                  ],
+                  "properties": {
+                    "bufferTag": {
+                      "type": "object",
+                      "default": {},
+                      "title": "The bufferTag Schema",
+                      "required": [
+                        "spcOid",
+                        "spcName",
+                        "dbOid",
+                        "dbName",
+                        "relNumber",
+                        "relName",
+                        "relKind",
+                        "forkName",
+                        "blockNumber"
+                      ],
+                      "properties": {
+                        "spcOid": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The spcOid Schema",
+                          "examples": [
+                            1663
+                          ]
+                        },
+                        "spcName": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The spcName Schema",
+                          "examples": [
+                            "pg_default"
+                          ]
+                        },
+                        "dbOid": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The dbOid Schema",
+                          "examples": [
+                            5
+                          ]
+                        },
+                        "dbName": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The dbName Schema",
+                          "examples": [
+                            "postgres"
+                          ]
+                        },
+                        "relNumber": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The relNumber Schema",
+                          "examples": [
+                            3079
+                          ]
+                        },
+                        "relName": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The relName Schema",
+                          "examples": [
+                            "pg_catalog.pg_extension"
+                          ]
+                        },
+                        "relKind": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The relKind Schema",
+                          "examples": [
+                            "r"
+                          ]
+                        },
+                        "forkName": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The forkName Schema",
+                          "examples": [
+                            "main"
+                          ]
+                        },
+                        "blockNumber": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The blockNumber Schema",
+                          "examples": [
+                            0
+                          ]
+                        }
+                      },
+                      "examples": [
+                        {
+                          "spcOid": 1663,
+                          "spcName": "pg_default",
+                          "dbOid": 5,
+                          "dbName": "postgres",
+                          "relNumber": 3079,
+                          "relName": "pg_catalog.pg_extension",
+                          "relKind": "r",
+                          "forkName": "main",
+                          "blockNumber": 0
+                        }
+                      ]
+                    },
+                    "exclusive": {
+                      "type": "object",
+                      "default": {},
+                      "title": "The exclusive Schema",
+                      "required": [
+                        "totalCalls",
+                        "sleepCount",
+                        "sleepTimeSum",
+                        "maxSleepTime"
+                      ],
+                      "properties": {
+                        "totalCalls": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The totalCalls Schema",
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "sleepCount": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The sleepCount Schema",
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "sleepTimeSum": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The sleepTimeSum Schema",
+                          "examples": [
+                            "0 nanosec"
+                          ]
+                        },
+                        "maxSleepTime": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The maxSleepTime Schema",
+                          "examples": [
+                            "0 nanosec"
+                          ]
+                        }
+                      },
+                      "examples": [
+                        {
+                          "totalCalls": 0,
+                          "sleepCount": 0,
+                          "sleepTimeSum": "0 nanosec",
+                          "maxSleepTime": "0 nanosec"
+                        }
+                      ]
+                    },
+                    "shared": {
+                      "type": "object",
+                      "default": {},
+                      "title": "The shared Schema",
+                      "required": [
+                        "totalCalls",
+                        "sleepCount",
+                        "sleepTimeSum",
+                        "maxSleepTime"
+                      ],
+                      "properties": {
+                        "totalCalls": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The totalCalls Schema",
+                          "examples": [
+                            1
+                          ]
+                        },
+                        "sleepCount": {
+                          "type": "integer",
+                          "default": 0,
+                          "title": "The sleepCount Schema",
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "sleepTimeSum": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The sleepTimeSum Schema",
+                          "examples": [
+                            "0 nanosec"
+                          ]
+                        },
+                        "maxSleepTime": {
+                          "type": "string",
+                          "default": "",
+                          "title": "The maxSleepTime Schema",
+                          "examples": [
+                            "0 nanosec"
+                          ]
+                        }
+                      },
+                      "examples": [
+                        {
+                          "totalCalls": 1,
+                          "sleepCount": 0,
+                          "sleepTimeSum": "0 nanosec",
+                          "maxSleepTime": "0 nanosec"
+                        }
+                      ]
+                    }
+                  },
+                  "examples": [
+                    {
+                      "bufferTag": {
+                        "spcOid": 1663,
+                        "spcName": "pg_default",
+                        "dbOid": 5,
+                        "dbName": "postgres",
+                        "relNumber": 3079,
+                        "relName": "pg_catalog.pg_extension",
+                        "relKind": "r",
+                        "forkName": "main",
+                        "blockNumber": 0
+                      },
+                      "exclusive": {
+                        "totalCalls": 0,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      },
+                      "shared": {
+                        "totalCalls": 1,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      }
+                    }
+                  ]
+                },
+                "examples": [
+                  [
+                    {
+                      "bufferTag": {
+                        "spcOid": 1663,
+                        "spcName": "pg_default",
+                        "dbOid": 5,
+                        "dbName": "postgres",
+                        "relNumber": 3079,
+                        "relName": "pg_catalog.pg_extension",
+                        "relKind": "r",
+                        "forkName": "main",
+                        "blockNumber": 0
+                      },
+                      "exclusive": {
+                        "totalCalls": 0,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      },
+                      "shared": {
+                        "totalCalls": 1,
+                        "sleepCount": 0,
+                        "sleepTimeSum": "0 nanosec",
+                        "maxSleepTime": "0 nanosec"
+                      }
+                    }
+                  ]
+                ]
+              }
+            },
+            "examples": [
+              {
+                "node": "ScanState",
+                "explain": {},
+                "executeTime": "32256 nanosec",
+                "LWLockStat": [
+                  {
+                    "bufferTag": {
+                      "spcOid": 1663,
+                      "spcName": "pg_default",
+                      "dbOid": 5,
+                      "dbName": "postgres",
+                      "relNumber": 3079,
+                      "relName": "pg_catalog.pg_extension",
+                      "relKind": "r",
+                      "forkName": "main",
+                      "blockNumber": 0
+                    },
+                    "exclusive": {
+                      "totalCalls": 0,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    },
+                    "shared": {
+                      "totalCalls": 1,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "examples": [
+            [
+              {
+                "node": "ScanState",
+                "explain": {},
+                "executeTime": "32256 nanosec",
+                "LWLockStat": [
+                  {
+                    "bufferTag": {
+                      "spcOid": 1663,
+                      "spcName": "pg_default",
+                      "dbOid": 5,
+                      "dbName": "postgres",
+                      "relNumber": 3079,
+                      "relName": "pg_catalog.pg_extension",
+                      "relKind": "r",
+                      "forkName": "main",
+                      "blockNumber": 0
+                    },
+                    "exclusive": {
+                      "totalCalls": 0,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    },
+                    "shared": {
+                      "totalCalls": 1,
+                      "sleepCount": 0,
+                      "sleepTimeSum": "0 nanosec",
+                      "maxSleepTime": "0 nanosec"
+                    }
+                  }
+                ]
+              }
+            ]
+          ]
+        },
+        "executionTime": {
+          "type": "string",
+          "default": "",
+          "title": "only plan execution time",
+          "examples": [
+            "368208 nanosec"
+          ]
+        },
+        "executorNodeStatInPlan": {
+          "type": "object",
+          "default": {},
+          "title": "explain for query with additional stat",
+          "required": [
+            "traceData"
+          ],
+          "properties": {
+            "traceData": {
+              "type": "object",
+              "default": {},
+              "title": "additional stat",
+              "required": [
+                "maxTime",
+                "totalCalls",
+                "totalTimeSum"
+              ],
+              "properties": {
+                "maxTime": {
+                  "type": "integer",
+                  "default": 0,
+                  "title": "The maxTime Schema",
+                  "examples": [
+                    32256
+                  ]
+                },
+                "totalCalls": {
+                  "type": "integer",
+                  "default": 0,
+                  "title": "The totalCalls Schema",
+                  "examples": [
+                    3
+                  ]
+                },
+                "totalTimeSum": {
+                  "type": "integer",
+                  "default": 0,
+                  "title": "The totalTimeSum Schema",
+                  "examples": [
+                    32980
+                  ]
+                }
+              },
+              "examples": [
+                {
+                  "maxTime": 32256,
+                  "totalCalls": 3,
+                  "totalTimeSum": 32980
+                }
+              ]
+            }
+          },
+          "examples": [
+            {
+              "traceData": {
+                "maxTime": 32256,
+                "totalCalls": 3,
+                "totalTimeSum": 32980
+              }
+            }
+          ]
+        },
+        "exprNodeStat": {
+          "type": "array",
+          "default": [],
+          "title": "statistic for expressions",
+          "items": {
+            "type": "object",
+            "default": {},
+            "title": "statistic for expression",
+            "required": [
+              "node",
+              "totalCalls",
+              "totalTimeSum",
+              "maxTime"
+            ],
+            "properties": {
+              "node": {
+                "type": "string",
+                "default": "",
+                "title": "The node Schema",
+                "examples": [
+                  ""
+                ]
+              },
+              "totalCalls": {
+                "type": "integer",
+                "default": 0,
+                "title": "The totalCalls Schema",
+                "examples": [
+                  123
+                ]
+              },
+              "totalTimeSum": {
+                "type": "string",
+                "default": "",
+                "title": "The totalTimeSum Schema",
+                "examples": [
+                  "10000 nanosec"
+                ]
+              },
+              "maxTime": {
+                "type": "string",
+                "default": "",
+                "title": "The maxTime Schema",
+                "examples": [
+                  "1000 nanosec"
+                ]
+              }
+            },
+            "examples": [
+              {
+                "node": "",
+                "totalCalls": 123,
+                "totalTimeSum": "10000 nanosec",
+                "maxTime": "1000 nanosec"
+              }
+            ]
+          },
+          "examples": [
+            []
+          ]
+        },
+        "locksInsidePortalRun": {
+          "type": "array",
+          "default": [],
+          "title": "LWLocks on shared buffers stat during PortalRun",
+          "items": {
+            "type": "object",
+            "default": {},
+            "title": "A Schema",
+            "required": [
+              "bufferTag",
+              "exclusive",
+              "shared"
+            ],
+            "properties": {
+              "bufferTag": {
+                "type": "object",
+                "default": {},
+                "title": "The bufferTag Schema",
+                "required": [
+                  "spcOid",
+                  "spcName",
+                  "dbOid",
+                  "dbName",
+                  "relNumber",
+                  "relName",
+                  "relKind",
+                  "forkName",
+                  "blockNumber"
+                ],
+                "properties": {
+                  "spcOid": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The spcOid Schema",
+                    "examples": [
+                      1663
+                    ]
+                  },
+                  "spcName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The spcName Schema",
+                    "examples": [
+                      "pg_default"
+                    ]
+                  },
+                  "dbOid": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The dbOid Schema",
+                    "examples": [
+                      5
+                    ]
+                  },
+                  "dbName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The dbName Schema",
+                    "examples": [
+                      "postgres"
+                    ]
+                  },
+                  "relNumber": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The relNumber Schema",
+                    "examples": [
+                      1249
+                    ]
+                  },
+                  "relName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The relName Schema",
+                    "examples": [
+                      "pg_catalog.pg_attribute"
+                    ]
+                  },
+                  "relKind": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The relKind Schema",
+                    "examples": [
+                      "r"
+                    ]
+                  },
+                  "forkName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The forkName Schema",
+                    "examples": [
+                      "main"
+                    ]
+                  },
+                  "blockNumber": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The blockNumber Schema",
+                    "examples": [
+                      13
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "spcOid": 1663,
+                    "spcName": "pg_default",
+                    "dbOid": 5,
+                    "dbName": "postgres",
+                    "relNumber": 1249,
+                    "relName": "pg_catalog.pg_attribute",
+                    "relKind": "r",
+                    "forkName": "main",
+                    "blockNumber": 13
+                  }
+                ]
+              },
+              "exclusive": {
+                "type": "object",
+                "default": {},
+                "title": "The exclusive Schema",
+                "required": [
+                  "totalCalls",
+                  "sleepCount",
+                  "sleepTimeSum",
+                  "maxSleepTime"
+                ],
+                "properties": {
+                  "totalCalls": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The totalCalls Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepCount": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The sleepCount Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepTimeSum": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The sleepTimeSum Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  },
+                  "maxSleepTime": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The maxSleepTime Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "totalCalls": 0,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                ]
+              },
+              "shared": {
+                "type": "object",
+                "default": {},
+                "title": "The shared Schema",
+                "required": [
+                  "totalCalls",
+                  "sleepCount",
+                  "sleepTimeSum",
+                  "maxSleepTime"
+                ],
+                "properties": {
+                  "totalCalls": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The totalCalls Schema",
+                    "examples": [
+                      8
+                    ]
+                  },
+                  "sleepCount": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The sleepCount Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepTimeSum": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The sleepTimeSum Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  },
+                  "maxSleepTime": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The maxSleepTime Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "totalCalls": 8,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                ]
+              }
+            },
+            "examples": [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 1249,
+                  "relName": "pg_catalog.pg_attribute",
+                  "relKind": "r",
+                  "forkName": "main",
+                  "blockNumber": 13
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 8,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          },
+          "examples": [
+            [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 1249,
+                  "relName": "pg_catalog.pg_attribute",
+                  "relKind": "r",
+                  "forkName": "main",
+                  "blockNumber": 13
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 8,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          ]
+        },
+        "locksOutsidePortalRun": {
+          "type": "array",
+          "default": [],
+          "title": "LWLocks on shared buffers ouside PortalRun",
+          "items": {
+            "type": "object",
+            "default": {},
+            "title": "A Schema",
+            "required": [
+              "bufferTag",
+              "exclusive",
+              "shared"
+            ],
+            "properties": {
+              "bufferTag": {
+                "type": "object",
+                "default": {},
+                "title": "The bufferTag Schema",
+                "required": [
+                  "spcOid",
+                  "spcName",
+                  "dbOid",
+                  "dbName",
+                  "relNumber",
+                  "relName",
+                  "relKind",
+                  "forkName",
+                  "blockNumber"
+                ],
+                "properties": {
+                  "spcOid": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The spcOid Schema",
+                    "examples": [
+                      1663
+                    ]
+                  },
+                  "spcName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The spcName Schema",
+                    "examples": [
+                      "pg_default"
+                    ]
+                  },
+                  "dbOid": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The dbOid Schema",
+                    "examples": [
+                      5
+                    ]
+                  },
+                  "dbName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The dbName Schema",
+                    "examples": [
+                      "postgres"
+                    ]
+                  },
+                  "relNumber": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The relNumber Schema",
+                    "examples": [
+                      1249
+                    ]
+                  },
+                  "relName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The relName Schema",
+                    "examples": [
+                      "pg_catalog.pg_attribute"
+                    ]
+                  },
+                  "relKind": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The relKind Schema",
+                    "examples": [
+                      "r"
+                    ]
+                  },
+                  "forkName": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The forkName Schema",
+                    "examples": [
+                      "main"
+                    ]
+                  },
+                  "blockNumber": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The blockNumber Schema",
+                    "examples": [
+                      13
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "spcOid": 1663,
+                    "spcName": "pg_default",
+                    "dbOid": 5,
+                    "dbName": "postgres",
+                    "relNumber": 1249,
+                    "relName": "pg_catalog.pg_attribute",
+                    "relKind": "r",
+                    "forkName": "main",
+                    "blockNumber": 13
+                  }
+                ]
+              },
+              "exclusive": {
+                "type": "object",
+                "default": {},
+                "title": "The exclusive Schema",
+                "required": [
+                  "totalCalls",
+                  "sleepCount",
+                  "sleepTimeSum",
+                  "maxSleepTime"
+                ],
+                "properties": {
+                  "totalCalls": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The totalCalls Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepCount": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The sleepCount Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepTimeSum": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The sleepTimeSum Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  },
+                  "maxSleepTime": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The maxSleepTime Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "totalCalls": 0,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                ]
+              },
+              "shared": {
+                "type": "object",
+                "default": {},
+                "title": "The shared Schema",
+                "required": [
+                  "totalCalls",
+                  "sleepCount",
+                  "sleepTimeSum",
+                  "maxSleepTime"
+                ],
+                "properties": {
+                  "totalCalls": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The totalCalls Schema",
+                    "examples": [
+                      8
+                    ]
+                  },
+                  "sleepCount": {
+                    "type": "integer",
+                    "default": 0,
+                    "title": "The sleepCount Schema",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "sleepTimeSum": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The sleepTimeSum Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  },
+                  "maxSleepTime": {
+                    "type": "string",
+                    "default": "",
+                    "title": "The maxSleepTime Schema",
+                    "examples": [
+                      "0 nanosec"
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "totalCalls": 8,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                ]
+              }
+            },
+            "examples": [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 1249,
+                  "relName": "pg_catalog.pg_attribute",
+                  "relKind": "r",
+                  "forkName": "main",
+                  "blockNumber": 13
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 8,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          },
+          "examples": [
+            [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 1249,
+                  "relName": "pg_catalog.pg_attribute",
+                  "relKind": "r",
+                  "forkName": "main",
+                  "blockNumber": 13
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 8,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          ]
+        },
+        "waitEventStat": {
+          "type": "array",
+          "default": [],
+          "title": "wait events during execution",
+          "items": {
+            "type": "object",
+            "default": {},
+            "title": "A Schema",
+            "required": [
+              "name",
+              "count",
+              "timeSum",
+              "maxTime"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "default": "",
+                "title": "The name Schema",
+                "examples": [
+                  "DataFileRead"
+                ]
+              },
+              "count": {
+                "type": "integer",
+                "default": 0,
+                "title": "The count Schema",
+                "examples": [
+                  1
+                ]
+              },
+              "timeSum": {
+                "type": "string",
+                "default": "",
+                "title": "The timeSum Schema",
+                "examples": [
+                  "860555 nanosec"
+                ]
+              },
+              "maxTime": {
+                "type": "string",
+                "default": "",
+                "title": "The maxTime Schema",
+                "examples": [
+                  "275268 nanosec"
+                ]
+              }
+            },
+            "examples": [
+              {
+                "name": "DataFileRead",
+                "count": 1,
+                "timeSum": "860555 nanosec",
+                "maxTime": "275268 nanosec"
+              }
+            ]
+          },
+          "examples": [
+            [
+              {
+                "name": "DataFileRead",
+                "count": 1,
+                "timeSum": "860555 nanosec",
+                "maxTime": "275268 nanosec"
+              }
+            ]
+          ]
+        }
+      },
+      "examples": [
+        {
+          "parsingTime": "72821 nanosec",
+          "planningTime": "884161 nanosec",
+          "planType": "custom",
+          "params": "",
+          "LWLockPlanning": {
+            "info": "Buffer locks usage for planning",
+            "stat": [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 2662,
+                  "relName": "pg_catalog.pg_class_oid_index",
+                  "relKind": "i",
+                  "forkName": "main",
+                  "blockNumber": 3
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 5,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          },
+          "explain": {
+            "Query Text": "select * from pg_extension;",
+            "Plan": {},
+            "Settings": {}
+          },
+          "executionEvents": [
+            {
+              "node": "ScanState",
+              "explain": {},
+              "executeTime": "32256 nanosec",
+              "LWLockStat": [
+                {
+                  "bufferTag": {
+                    "spcOid": 1663,
+                    "spcName": "pg_default",
+                    "dbOid": 5,
+                    "dbName": "postgres",
+                    "relNumber": 3079,
+                    "relName": "pg_catalog.pg_extension",
+                    "relKind": "r",
+                    "forkName": "main",
+                    "blockNumber": 0
+                  },
+                  "exclusive": {
+                    "totalCalls": 0,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  },
+                  "shared": {
+                    "totalCalls": 1,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                }
+              ]
+            }
+          ],
+          "executionTime": "368208 nanosec",
+          "executorNodeStatInPlan": {
+            "traceData": {
+              "maxTime": 32256,
+              "totalCalls": 3,
+              "totalTimeSum": 32980
+            }
+          },
+          "exprNodeStat": [],
+          "locksInsidePortalRun": [
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 1249,
+                "relName": "pg_catalog.pg_attribute",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 13
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 8,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            }
+          ],
+          "locksOutsidePortalRun": [
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 1249,
+                "relName": "pg_catalog.pg_attribute",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 13
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 8,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            }
+          ],
+          "waitEventStat": [
+            {
+              "name": "DataFileRead",
+              "count": 1,
+              "timeSum": "860555 nanosec",
+              "maxTime": "275268 nanosec"
+            }
+          ]
+        }
+      ]
+    },
+    "examples": [
+      [
+        {
+          "parsingTime": "72821 nanosec",
+          "planningTime": "884161 nanosec",
+          "planType": "custom",
+          "params": "",
+          "LWLockPlanning": {
+            "info": "Buffer locks usage for planning",
+            "stat": [
+              {
+                "bufferTag": {
+                  "spcOid": 1663,
+                  "spcName": "pg_default",
+                  "dbOid": 5,
+                  "dbName": "postgres",
+                  "relNumber": 2662,
+                  "relName": "pg_catalog.pg_class_oid_index",
+                  "relKind": "i",
+                  "forkName": "main",
+                  "blockNumber": 3
+                },
+                "exclusive": {
+                  "totalCalls": 0,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                },
+                "shared": {
+                  "totalCalls": 5,
+                  "sleepCount": 0,
+                  "sleepTimeSum": "0 nanosec",
+                  "maxSleepTime": "0 nanosec"
+                }
+              }
+            ]
+          },
+          "explain": {
+            "Query Text": "select * from pg_extension;",
+            "Plan": {},
+            "Settings": {}
+          },
+          "executionEvents": [
+            {
+              "node": "ScanState",
+              "explain": {},
+              "executeTime": "32256 nanosec",
+              "LWLockStat": [
+                {
+                  "bufferTag": {
+                    "spcOid": 1663,
+                    "spcName": "pg_default",
+                    "dbOid": 5,
+                    "dbName": "postgres",
+                    "relNumber": 3079,
+                    "relName": "pg_catalog.pg_extension",
+                    "relKind": "r",
+                    "forkName": "main",
+                    "blockNumber": 0
+                  },
+                  "exclusive": {
+                    "totalCalls": 0,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  },
+                  "shared": {
+                    "totalCalls": 1,
+                    "sleepCount": 0,
+                    "sleepTimeSum": "0 nanosec",
+                    "maxSleepTime": "0 nanosec"
+                  }
+                }
+              ]
+            }
+          ],
+          "executionTime": "368208 nanosec",
+          "executorNodeStatInPlan": {
+            "traceData": {
+              "maxTime": 32256,
+              "totalCalls": 3,
+              "totalTimeSum": 32980
+            }
+          },
+          "exprNodeStat": [],
+          "locksInsidePortalRun": [
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 1249,
+                "relName": "pg_catalog.pg_attribute",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 13
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 8,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            }
+          ],
+          "locksOutsidePortalRun": [
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 1249,
+                "relName": "pg_catalog.pg_attribute",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 13
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 8,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            }
+          ],
+          "waitEventStat": [
+            {
+              "name": "DataFileRead",
+              "count": 1,
+              "timeSum": "860555 nanosec",
+              "maxTime": "275268 nanosec"
+            }
+          ]
+        }
+      ]
+    ]
+  }

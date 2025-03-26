@@ -1,0 +1,7 @@
+.vscode
+build
+third_party
+*.bc
+*.o
+*.so
+node_names.h
