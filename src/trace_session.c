@@ -36,7 +36,7 @@ static ExecutorRun_hook_type prev_ExecutorRun_hook = NULL; // hook to log plan b
 bool isExecuteTime = false;
 
 //GUC parametrs
-int writeMode = TEXT_WRITE_MODE;
+int writeMode = JSON_WRITE_MODE;
 bool traceLWLocksForEachNode;
 bool writeOnlySleepLWLocksStat;
 
