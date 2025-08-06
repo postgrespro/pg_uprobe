@@ -2,15 +2,15 @@
 #define UPROBE_SHARED_CONFIG_H
 
 
-typedef void (*LoadFromConfigApplyFunc)(const char* func, const char* type);
+typedef void (*LoadFromConfigApplyFunc) (const char *func, const char *type);
 
 
-extern void PGUprobeSaveInSharedConfig(char* func, char* type);
+extern void PGUprobeSaveInSharedConfig(char *func, char *type);
 
 
 extern void PGUprobeLoadFromSharedConfig(LoadFromConfigApplyFunc applyFunc);
 
 
-extern void PGUprobeDeleteFromSharedConfig(const char* func);
+extern void PGUprobeDeleteFromSharedConfig(const char *func);
 
-#endif
+#endif							/* UPROBE_SHARED_CONFIG_H */

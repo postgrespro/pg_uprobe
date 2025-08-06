@@ -56,3 +56,5 @@ endif
 GEN_LOG := $(shell python3 gen_node_names_array.py $(MAJORVERSION) $(PG_INCLUDE_DIR)/nodes node_names.h)
 
 
+python_tests:
+	python3 ./tests/main.py

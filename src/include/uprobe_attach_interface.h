@@ -17,22 +17,20 @@
 
 struct UprobeAttachInterface;
 
-typedef void (*UprobeAttachCleanFunc)(struct UprobeAttachInterface*);
+typedef void (*UprobeAttachCleanFunc) (struct UprobeAttachInterface *);
 
-typedef void (*UprobeAttachTimedFunc)(struct UprobeAttachInterface*);
+typedef void (*UprobeAttachTimedFunc) (struct UprobeAttachInterface *);
 
 typedef struct UprobeAttachInterface
 {
-    void* inFunc;
-    void* retFunc;
-    UprobeAttachTimedFunc timedCallback;
-    UprobeAttachCleanFunc cleanFunc;
-    void* data;
-    char* targetSymbol;
-    int numArgs;
-    bool needRetVal;
+	void	   *inFunc;
+	void	   *retFunc;
+	UprobeAttachTimedFunc timedCallback;
+	UprobeAttachCleanFunc cleanFunc;
+	void	   *data;
+	char	   *targetSymbol;
+	int			numArgs;
+	bool		needRetVal;
 } UprobeAttachInterface;
 
-
-
-#endif
+#endif							/* UPROBE_ATTACH_INTERFACE_H */

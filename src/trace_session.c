@@ -1,11 +1,17 @@
 #include "postgres.h"
 #include <time.h>
+#include <sys/time.h>
 #include "utils/memutils.h"
 #include "utils/portal.h"
 #include "utils/jsonb.h"
 #include "utils/guc.h"
 #include "commands/explain.h"
+#if PG_MAJORVERSION_NUM >= 18
+#include "commands/explain_state.h"
+#include "commands/explain_format.h"
+#endif
 #include "storage/ipc.h"
+#include "storage/proc.h"
 
 #include "trace_parsing.h"
 #include "uprobe_internal.h"
@@ -23,577 +29,657 @@
 #define MAX_PLAN_NEST_LEVEL 100
 
 
-static UprobeList* uprobesList = NULL;
+static UprobeList *uprobesList = NULL;
 
 static MemoryContext traceMemoryContext = NULL;
 
-static uint64 executionStarted;
+static volatile Uprobe *lastSetUprobe = NULL;
 
-static volatile Uprobe* lastSetUprobe = NULL; //we need it in case that ListAdd fails and we need to delete this uprobe
+/* we need it in case that ListAdd fails and we need to delete this uprobe */
 
-static ExecutorRun_hook_type prev_ExecutorRun_hook = NULL; // hook to log plan before execution
+static ExecutorRun_hook_type prev_ExecutorRun_hook = NULL;
 
-bool isExecuteTime = false;
+static ExecutorStart_hook_type prev_ExecutorStart_hook = NULL;
 
-//GUC parametrs
-int writeMode = JSON_WRITE_MODE;
-bool traceLWLocksForEachNode;
-bool writeOnlySleepLWLocksStat;
+bool		isExecuteTime = false;
+
+int			ExecutorRunNestLevel = 0;
+
+/* GUC parametrs */
+int			writeMode = JSON_WRITE_MODE;
+bool		traceLWLocksForEachNode = true;
+bool		writeOnlySleepLWLocksStat = true;
 
 
 static const struct config_enum_entry writeModeOptions[] = {
-    {"text", TEXT_WRITE_MODE, false},
-    {"json", JSON_WRITE_MODE, false},
-    {NULL, 0, false}
+	{"text", TEXT_WRITE_MODE, false},
+	{"json", JSON_WRITE_MODE, false},
+	{NULL, 0, false}
 };
 
+#if PG_MAJORVERSION_NUM >= 18
 static void TraceSessionExecutorRun(QueryDesc *queryDesc,
-                                       ScanDirection direction,
-                                       uint64 count,
-                                       bool execute_once);
-static char* ProcessDescBeforeExec(QueryDesc *queryDesc);
+									ScanDirection direction,
+									uint64 count);
+#else
+static void TraceSessionExecutorRun(QueryDesc *queryDesc,
+									ScanDirection direction,
+									uint64 count,
+									bool execute_once);
+#endif
+static void TraceSessionExecutorStart(QueryDesc *queryDesc, int eflags);
+static char *ProcessDescBeforeExec(QueryDesc *queryDesc);
 
-static UprobeList* MakeNodesPlanStringsText(char* startPlanExplain, char* endPlanExplain);
+static UprobeList *MakeNodesPlanStringsText(char *startPlanExplain, char *endPlanExplain);
 
-static JsonbValue* FindField(JsonbValue* json, char* field, size_t len);
-static void JsonbDeleteField(JsonbValue* json, JsonbValue* value);
-static void AddExplainJsonbToNode(JsonbValue* planNode, UprobeList* strNodes);
-static void MakeNodesRecursive(JsonbValue* planNode, UprobeList* strNodes);
-static UprobeList* MakeNodesPlanStringsJson(char* explainString, size_t len);
+static JsonbValue *FindField(JsonbValue *json, char *field, size_t len);
+static void JsonbDeleteField(JsonbValue *json, JsonbValue *value);
+static void AddExplainJsonbToNode(JsonbValue *planNode, UprobeList *strNodes);
+static void MakeNodesRecursive(JsonbValue *planNode, UprobeList *strNodes);
+static UprobeList *MakeNodesPlanStringsJson(char *explainString, size_t len);
 
-static void SetUprobes2Ptr(UprobeAttachInterface** uprobes, size_t size);
-static void SetUprobes1Ptr(UprobeAttachInterface* uprobes, size_t size);
+static void SetUprobes2Ptr(UprobeAttachInterface **uprobes, size_t size);
+static void SetUprobes1Ptr(UprobeAttachInterface *uprobes, size_t size);
 
-static char* BeforeExecution(QueryDesc *queryDesc);
-static void AfterExecution(QueryDesc* queryDesc, char* planString);
-
-static void ClearAfterEreportInFunc(void* data);
-static void ClearAfterEreportRetFunc(void* data);
-static void ClearAfterEreportCleanFunc(UprobeAttachInterface* uprobe);
-static UprobeAttachInterface* UprobeOnClearAfterEreportGet(void);
+static char *BeforeExecution(QueryDesc *queryDesc);
+static void AfterExecution(QueryDesc *queryDesc, char *planString);
 
 
 static void
-SetUprobes2Ptr(UprobeAttachInterface** uprobes, size_t size)
+SetUprobes2Ptr(UprobeAttachInterface **uprobes, size_t size)
 {
-    Uprobe* uprobe;
-    UPROBE_INIT_RES res;
-    for (size_t i = 0; i < size; i++)
-    {
-        res = UprobeInit(uprobes[i], &uprobe);
-        if (res != SUCCESS)
-        {
-            elog(ERROR, "can't set uprobe for %s symbol", uprobes[i]->targetSymbol);
-        }
-        lastSetUprobe = uprobe; //save it in case ListAdd faild
-        ListAdd(uprobesList, uprobe);
-        lastSetUprobe = NULL;
-    }
+	Uprobe	   *uprobe;
+	UPROBE_INIT_RES res;
+
+	for (size_t i = 0; i < size; i++)
+	{
+		res = UprobeInit(uprobes[i], &uprobe);
+		if (res != SUCCESS)
+		{
+			elog(ERROR, "can't set uprobe for %s symbol", uprobes[i]->targetSymbol);
+		}
+		lastSetUprobe = uprobe;
+		/* save it in case ListAdd faild */
+		ListAdd(uprobesList, uprobe);
+		lastSetUprobe = NULL;
+	}
 }
 
 
 static void
-SetUprobes1Ptr(UprobeAttachInterface* uprobes, size_t size)
+SetUprobes1Ptr(UprobeAttachInterface *uprobes, size_t size)
 {
-    Uprobe* uprobe;
-    UPROBE_INIT_RES res;
-    for (size_t i = 0; i < size; i++)
-    {
-        res = UprobeInit(&uprobes[i], &uprobe);
-        if (res != SUCCESS)
-        {
-            elog(ERROR, "can't set uprobe for %s symbol", uprobes[i].targetSymbol);
-        }
-        lastSetUprobe = uprobe; //save it in case ListAdd faild
-        ListAdd(uprobesList, uprobe);
-        lastSetUprobe = NULL;
-    }
+	Uprobe	   *uprobe;
+	UPROBE_INIT_RES res;
+
+	for (size_t i = 0; i < size; i++)
+	{
+		res = UprobeInit(&uprobes[i], &uprobe);
+		if (res != SUCCESS)
+		{
+			elog(ERROR, "can't set uprobe for %s symbol", uprobes[i].targetSymbol);
+		}
+		lastSetUprobe = uprobe;
+		/* save it in case ListAdd faild */
+		ListAdd(uprobesList, uprobe);
+		lastSetUprobe = NULL;
+	}
 }
 
 
-static char*
+static char *
 BeforeExecution(QueryDesc *queryDesc)
 {
-    struct timespec time;
-    char* planCopy;
-    clock_gettime(CLOCKTYPE, &time);
-    executionStarted = time.tv_sec * 1000000000L + time.tv_nsec;
-    LockOnBuffersTraceStatPush();
-    TraceWaitEventsClearStat();
+	struct timeval timeOfDay;
+	char	   *planCopy;
+	char		timebuf[128];
+	time_t		tt;
 
-    planCopy = ProcessDescBeforeExec(queryDesc);
-    isExecuteTime = true;
-    if (writeMode == JSON_WRITE_MODE)
-        TracePrintf("\"executionEvents\": [\n");
+	LockOnBuffersTraceStatPush();
+	TraceWaitEventsClearStat();
+	ExecuteNodesStatePush(queryDesc);
 
-    return planCopy;
+	if (writeMode == JSON_WRITE_MODE)
+		TracePrintf("{");
+
+	ParsingWriteData();
+	PlanningWriteData();
+
+	gettimeofday(&timeOfDay, NULL);
+	tt = (time_t) timeOfDay.tv_sec;
+	strftime(timebuf, sizeof(timebuf), "%Y:%m:%dT%H:%M:%S", localtime(&tt));
+	snprintf(timebuf + strlen(timebuf), sizeof(timebuf) - strlen(timebuf),
+			 ".%03d", (int) (timeOfDay.tv_usec / 1000));
+	if (writeMode == JSON_WRITE_MODE)
+		TracePrintf("\"executionStart\": \"%s\",\n", timebuf);
+	else
+		TracePrintf("Execution start: %s\n", timebuf);
+	planCopy = ProcessDescBeforeExec(queryDesc);
+	isExecuteTime = true;
+	isFirstNodeCall = true;
+	if (writeMode == JSON_WRITE_MODE)
+		TracePrintf("\"executionEvents\": [\n");
+
+	return planCopy;
 }
 
 
 static void
-AfterExecution(QueryDesc* queryDesc, char* planString)
+AfterExecution(QueryDesc *queryDesc, char *planString)
 {
-    struct timespec time;
-    uint64 timeDiff;
-    StringInfoData str;
-    MemoryContext old;
-    bool hasStat;
-    clock_gettime(CLOCKTYPE, &time);
+	StringInfoData str;
+	MemoryContext old;
+	bool		hasStat;
 
-    timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - executionStarted;
-    if (writeMode == TEXT_WRITE_MODE)
-        TracePrintf("TRACE. Execution finished for %lu nanosec\n", timeDiff);
-    else
-        TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
+	isExecuteTime = false;
+	/* finishing race session file in case trace session has ended */
+	if (!traceMemoryContext)
+	{
+		if (writeMode == JSON_WRITE_MODE)
+		{
+			TracePrintf("\n}");
+			if (ExecutorRunNestLevel == 0)
+				TracePrintf("]}");
+		}
+		if (ExecutorRunNestLevel == 0)
+			CloseTraceSessionFile();
+		return;
+	}
 
-    isExecuteTime = false;
-    if (!traceMemoryContext)
-    {
-        if (writeMode == JSON_WRITE_MODE)
-        {
-            TracePrintf("\n}]");
-        }
-        CloseTraceSessionFile();
-        return;
-    }
+	ExecutorTraceDumpAndClearStat(queryDesc, planString);
+	ExecuteNodesStatePop();
+	old = MemoryContextSwitchTo(traceMemoryContext);
+	initStringInfo(&str);
 
-    ExecutorTraceDumpAndClearStat(queryDesc, planString);
+	hasStat = LockOnBuffersTraceWriteStat(&str, false);
+	if (hasStat)
+	{
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE LWLOCK. Buffer locks stat inside PortalRun %s\n", str.data);
+		else
+			TracePrintf(",\n\"locksInsidePortalRun\": %s", str.data);
+	}
+	LockOnBuffersTraceStatPop();
 
-    old = MemoryContextSwitchTo(traceMemoryContext);
-    initStringInfo(&str);
+	resetStringInfo(&str);
+	hasStat = LockOnBuffersTraceWriteStat(&str, true);
+	if (hasStat)
+	{
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE LWLOCK. Buffer locks stat inside PortalRun %s\n", str.data);
+		else
+			TracePrintf(",\n\"locksOutsidePortalRun\": %s", str.data);
+	}
+	resetStringInfo(&str);
+	hasStat = TraceWaitEventDumpStat(&str);
+	if (hasStat)
+	{
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE WAIT EVENTS.\n %s\n", str.data);
+		else
+			TracePrintf(",\n\"waitEventStat\": %s\n", str.data);
+	}
+	pfree(str.data);
+	MemoryContextSwitchTo(old);
 
-    hasStat = LockOnBuffersTraceWriteStat(&str, false);
-    if (hasStat)
-    {
-        if (writeMode == TEXT_WRITE_MODE)
-           TracePrintf("TRACE LWLOCK. Buffer locks stat inside PortalRun %s\n", str.data);
-        else
-            TracePrintf(",\n\"locksInsidePortalRun\": %s", str.data);
-    }
-    LockOnBuffersTraceStatPop();
-
-    resetStringInfo(&str);
-    hasStat = LockOnBuffersTraceWriteStat(&str, true);
-    if (hasStat)
-    {
-        if (writeMode == TEXT_WRITE_MODE)
-            TracePrintf("TRACE LWLOCK. Buffer locks stat inside PortalRun %s\n", str.data);
-        else
-            TracePrintf(",\n\"locksOutsidePortalRun\": %s", str.data);
-    }
-    resetStringInfo(&str);
-    hasStat = TraceWaitEventDumpStat(&str);
-    if (hasStat)
-    {
-        if (writeMode == TEXT_WRITE_MODE)
-            TracePrintf("TRACE WAIT EVENTS.\n %s\n", str.data);
-        else
-            TracePrintf(",\n\"waitEventStat\": %s\n", str.data);
-    }
-    pfree(str.data);
-    MemoryContextSwitchTo(old);
-
-    if (writeMode == TEXT_WRITE_MODE)
-        TracePrintf("\n\n---------query end------------\n\n");
-    else
-        TracePrintf("},\n");
-}
-
-
-static void
-ClearAfterEreportInFunc(void* data)
-{
-    ExecutorTraceClearStat();
-    LockOnBuffersTraceClearStat();
-}
-
-
-static void
-ClearAfterEreportRetFunc(void* data)
-{
-
-}
-
-
-static void
-ClearAfterEreportCleanFunc(UprobeAttachInterface* uprobe)
-{
-    pfree(uprobe);
-}
-
-
-static UprobeAttachInterface*
-UprobeOnClearAfterEreportGet(void)
-{
-    UprobeAttachInterface* res = palloc0(sizeof(UprobeAttachInterface));
-    res->cleanFunc = ClearAfterEreportCleanFunc;
-    res->inFunc = ClearAfterEreportInFunc;
-    res->retFunc = ClearAfterEreportRetFunc;
-    res->targetSymbol = "FlushErrorState";
-    return res;
+	if (writeMode == TEXT_WRITE_MODE)
+		TracePrintf("\n\n---------query end------------\n\n");
+	else
+		TracePrintf("}");
 }
 
 
 static void
 TraceNotNormalShutdown(void)
 {
-    if (!traceFile)
-        return;
-    if (writeMode == JSON_WRITE_MODE)
-        TracePrintf("{}\n]");
+	if (!traceFile)
+		return;
+	if (writeMode == JSON_WRITE_MODE)
+	{
 
-    CloseTraceSessionFile();
+		if (ExecutorRunNestLevel > 0)
+
+			/*
+			 * We clone array of ExecutorEvents and whole json oject for each
+			 * nestlevel.
+			 */
+			for (int i = 0; i < ExecutorRunNestLevel; i++)
+				TracePrintf("]\n}");
+
+		TracePrintf("\n]}");
+	}
+	CloseTraceSessionFile();
 }
+
 
 void
 SessionTraceStart(void)
 {
-    UprobeAttachInterface* fixedUprobes[2];
-    UprobeAttachInterface* uprobes;
-    MemoryContext old;
-    size_t size;
-    if (uprobesList)
-        elog(ERROR, "session trace is already ON");
+	UprobeAttachInterface *fixedUprobes[2];
+	UprobeAttachInterface *uprobes;
+	MemoryContext old;
+	size_t		size;
 
-    PG_TRY();
-    {
-        traceMemoryContext = AllocSetContextCreate(TopMemoryContext, "uprobe trace context", ALLOCSET_DEFAULT_SIZES);
-        OpenTraceSessionFile(true);
+	if (uprobesList)
+		elog(ERROR, "session trace is already ON");
 
-        ListInit(&uprobesList, (CompareFunction) UprobeCompare, traceMemoryContext);
-        old = MemoryContextSwitchTo(traceMemoryContext);
+	PG_TRY();
+	{
+		traceMemoryContext = AllocSetContextCreate(TopMemoryContext, "uprobe trace context", ALLOCSET_DEFAULT_SIZES);
+		OpenTraceSessionFile(true);
 
-        LockOnBuffersUprobesGet(traceMemoryContext, fixedUprobes, writeOnlySleepLWLocksStat);
-        SetUprobes2Ptr(fixedUprobes, 2);
+		ListInit(&uprobesList, (CompareFunction) UprobeCompare, traceMemoryContext);
+		old = MemoryContextSwitchTo(traceMemoryContext);
 
-        uprobes = ParsingUprobeGet();
-        SetUprobes1Ptr(uprobes, 1);
+		LockOnBuffersUprobesGet(traceMemoryContext, fixedUprobes, writeOnlySleepLWLocksStat);
+		SetUprobes2Ptr(fixedUprobes, 2);
 
-        PlanningUprobesGet(fixedUprobes);
-        SetUprobes2Ptr(fixedUprobes, 2);
+		uprobes = ParsingUprobeGet();
+		SetUprobes1Ptr(uprobes, 1);
 
-        ExecutorTraceUprobesGet(fixedUprobes, traceMemoryContext, traceLWLocksForEachNode);
-        SetUprobes2Ptr(fixedUprobes, 1);
+		PlanningUprobesGet(fixedUprobes, traceMemoryContext);
+		SetUprobes2Ptr(fixedUprobes, 2);
 
-        uprobes = UprobeOnClearAfterEreportGet();
-        SetUprobes1Ptr(uprobes, 1);
+		ExecutorTraceUprobesGet(fixedUprobes, traceMemoryContext, traceLWLocksForEachNode);
+		SetUprobes2Ptr(fixedUprobes, 1);
 
-        uprobes = TraceWaitEventsUprobesGet(&size);
-        SetUprobes1Ptr(uprobes, size);
+		uprobes = TraceWaitEventsUprobesGet(&size);
+		SetUprobes1Ptr(uprobes, size);
 
-        on_proc_exit((pg_on_exit_callback) TraceNotNormalShutdown, 0);
-    }
-    PG_CATCH();
-    {
-        CloseTraceSessionFile();
-        if (!uprobesList)
-            PG_RE_THROW();
+		on_proc_exit((pg_on_exit_callback) TraceNotNormalShutdown, 0);
+		prev_ExecutorRun_hook = ExecutorRun_hook;
+		ExecutorRun_hook = TraceSessionExecutorRun;
+		prev_ExecutorStart_hook = ExecutorStart_hook;
+		ExecutorStart_hook = TraceSessionExecutorStart;
+	}
+	PG_CATCH();
+	{
+		CloseTraceSessionFile();
+		if (!uprobesList)
+			PG_RE_THROW();
 
-        LIST_FOREACH(uprobesList, it)
-        {
-            UprobeDelete(it->value);
-        }
-        ListFree(uprobesList);
-        uprobesList = NULL;
-        traceMemoryContext = NULL;
-        if (lastSetUprobe)
-            UprobeDelete((Uprobe*) lastSetUprobe);
-        lastSetUprobe = NULL;
-        TraceWaitEventsUprobesClean();
-        PG_RE_THROW();
-    }
-    PG_END_TRY();
+		LIST_FOREACH(uprobesList, it)
+		{
+			UprobeDelete(it->value);
+		}
+		ListFree(uprobesList);
+		uprobesList = NULL;
+		traceMemoryContext = NULL;
+		if (lastSetUprobe)
+			UprobeDelete((Uprobe *) lastSetUprobe);
+		lastSetUprobe = NULL;
+		TraceWaitEventsUprobesClean();
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
 
-    if (writeMode == JSON_WRITE_MODE)
-        TracePrintf("[\n");
+	if (writeMode == JSON_WRITE_MODE)
+	{
+		TracePrintf("{\"pid\":%d,\n \"queries\": [\n", MyProc->pid);
+	}
+	else
+	{
+		TracePrintf("process pid %d\n", MyProc->pid);
+	}
 
-
-    MemoryContextSwitchTo(old);
+	MemoryContextSwitchTo(old);
 }
 
 
 void
-SessionTraceStop(void)
+SessionTraceStop(bool closeFile)
 {
-    if (uprobesList == NULL)
-        elog(ERROR, "session trace is not ON");
-    ExecutorTraceStop();
-    LIST_FOREACH(uprobesList, it)
-    {
-        UprobeDelete(it->value);
-    }
-    uprobesList = NULL;
-    MemoryContextDelete(traceMemoryContext);
-    traceMemoryContext = NULL;
-    //outputFile will be closed at TraceSessionExecutorRun
+	if (uprobesList == NULL)
+		elog(ERROR, "session trace is not ON");
+	ExecutorTraceStop();
+	LIST_FOREACH(uprobesList, it)
+	{
+		UprobeDelete(it->value);
+	}
+	uprobesList = NULL;
+	if (closeFile)
+	{
+		TracePrintf("\n]}");
+		CloseTraceSessionFile();
+	}
+	/* Else TraceSessionFile will be closed at TraceSessionExecutorRun. */
+	PlanningClearData();
+	ParsingClearData();
+	MemoryContextDelete(traceMemoryContext);
+	traceMemoryContext = NULL;
+	ExecutorRun_hook = prev_ExecutorRun_hook;
+	ExecutorStart_hook = prev_ExecutorStart_hook;
 }
 
 
 void
 SessionTraceInit(void)
 {
-    prev_ExecutorRun_hook = ExecutorRun_hook;
-    ExecutorRun_hook = TraceSessionExecutorRun;
-
-    DefineCustomEnumVariable("pg_uprobe.trace_write_mode",
-                             "format for session trace output",
-                             NULL,
-                             &writeMode,
-                             JSON_WRITE_MODE,
-                             writeModeOptions,
-                             PGC_SUSET,
-                             0,
-                             NULL,
-                             NULL,
-                             NULL);
-    DefineCustomBoolVariable("pg_uprobe.trace_LWLocks_for_each_node",
-                             "if set to true LWLock stat will be traced for each node execution otherwise it will be traced for whole execution",
-                             NULL,
-                             &traceLWLocksForEachNode,
-                             true,
-                             PGC_SUSET,
-                             0,
-                             NULL,
-                             NULL,
-                             NULL);
-    DefineCustomBoolVariable("pg_uprobe.write_only_sleep_LWLocks_stat",
-                             "if set to true LWLock stat will be traced only for those locks that you had to fall asleep to take.",
-                             NULL,
-                             &writeOnlySleepLWLocksStat,
-                             true,
-                             PGC_SUSET,
-                             0,
-                             NULL,
-                             NULL,
-                             NULL);
-    TraceFileDeclareGucVariables();
+	DefineCustomEnumVariable("pg_uprobe.trace_write_mode",
+							 "format for session trace output",
+							 NULL,
+							 &writeMode,
+							 JSON_WRITE_MODE,
+							 writeModeOptions,
+							 PGC_SUSET,
+							 0,
+							 NULL,
+							 NULL,
+							 NULL);
+	DefineCustomBoolVariable("pg_uprobe.trace_LWLocks_for_each_node",
+							 "if set to true LWLock stat will be traced for each node execution otherwise it will be traced for whole execution",
+							 NULL,
+							 &traceLWLocksForEachNode,
+							 true,
+							 PGC_SUSET,
+							 0,
+							 NULL,
+							 NULL,
+							 NULL);
+	DefineCustomBoolVariable("pg_uprobe.write_only_sleep_LWLocks_stat",
+							 "if set to true LWLock stat will be traced only for those locks that you had to fall asleep to take.",
+							 NULL,
+							 &writeOnlySleepLWLocksStat,
+							 true,
+							 PGC_SUSET,
+							 0,
+							 NULL,
+							 NULL,
+							 NULL);
+	TraceFileDeclareGucVariables();
 }
 
 
-static char*
+static char *
 ProcessDescBeforeExec(QueryDesc *queryDesc)
 {
-    MemoryContext old;
-    ExplainState* es;
-    size_t explainPlanStartOffset;
-    size_t explainPlanEnd;
-    UprobeList* stringPlanParts;
-    char* planCopy;
-    old = MemoryContextSwitchTo(queryDesc->estate->es_query_cxt);
-    es = NewExplainState();
+	MemoryContext old;
+	ExplainState *es;
+	size_t		explainPlanStartOffset;
+	size_t		explainPlanEnd;
+	UprobeList *stringPlanParts = NULL;
+	char	   *planCopy;
 
-    es->analyze = queryDesc->instrument_options;
-    es->verbose = true;
-    es->buffers = es->analyze;
-    es->wal = es->analyze;
-    es->timing = es->analyze;
-    es->summary = es->analyze;
-    if (writeMode == TEXT_WRITE_MODE)
-        es->format = EXPLAIN_FORMAT_TEXT;
-    else
-        es->format = EXPLAIN_FORMAT_JSON;
-    es->settings = true;
+	old = MemoryContextSwitchTo(queryDesc->estate->es_query_cxt);
+	es = NewExplainState();
 
-    ExplainBeginOutput(es);
-    ExplainQueryText(es, queryDesc);
+	es->analyze = queryDesc->instrument_options;
+	es->verbose = true;
+	es->buffers = es->analyze;
+	es->wal = es->analyze;
+	es->timing = es->analyze;
+	es->summary = es->analyze;
+	if (writeMode == TEXT_WRITE_MODE)
+		es->format = EXPLAIN_FORMAT_TEXT;
+	else
+		es->format = EXPLAIN_FORMAT_JSON;
+	es->settings = true;
+
+	ExplainBeginOutput(es);
+	ExplainQueryText(es, queryDesc);
 #if PG_MAJORVERSION_NUM > 15
-    ExplainQueryParameters(es, queryDesc->params, -1);
+	ExplainQueryParameters(es, queryDesc->params, -1);
 #endif
-    explainPlanStartOffset = es->str->len;
-    ExplainPrintPlan(es, queryDesc);
-    explainPlanEnd = es->str->len;
-    if (es->analyze)
-        ExplainPrintTriggers(es, queryDesc);
-    if (es->costs)
-        ExplainPrintJITSummary(es, queryDesc);
-    ExplainEndOutput(es);
+	explainPlanStartOffset = es->str->len;
+	ExplainPrintPlan(es, queryDesc);
+	explainPlanEnd = es->str->len;
+	if (es->analyze)
+		ExplainPrintTriggers(es, queryDesc);
+	if (es->costs)
+		ExplainPrintJITSummary(es, queryDesc);
+	ExplainEndOutput(es);
 
-    /* Remove last line break */
-    if (es->str->len > 0 && es->str->data[es->str->len - 1] == '\n')
-        es->str->data[--es->str->len] = '\0';
-    /* Fix JSON to output an object */
-    if (es->format == EXPLAIN_FORMAT_JSON)
-    {
-        es->str->data[0] = '{';
-        es->str->data[es->str->len - 1] = '}';
-    }
+	/* Remove last line break */
+	if (es->str->len > 0 && es->str->data[es->str->len - 1] == '\n')
+		es->str->data[--es->str->len] = '\0';
+	/* Fix JSON to output an object */
+	if (es->format == EXPLAIN_FORMAT_JSON)
+	{
+		es->str->data[0] = '{';
+		es->str->data[es->str->len - 1] = '}';
+	}
 
-    if (writeMode == TEXT_WRITE_MODE)
-        TracePrintf("TRACE EXECUTE. plan: \n%s\n", es->str->data);
-    else
-        TracePrintf("\"explain\": %s,\n", es->str->data);
+	if (writeMode == TEXT_WRITE_MODE)
+		TracePrintf("TRACE EXECUTE. plan: \n%s\n", es->str->data);
+	else
+		TracePrintf("\"explain\": %s,\n", es->str->data);
 
-    if (writeMode == TEXT_WRITE_MODE)
-    {
-        planCopy = pnstrdup(es->str->data + explainPlanStartOffset, explainPlanEnd - explainPlanStartOffset);
-        stringPlanParts = MakeNodesPlanStringsText(es->str->data + explainPlanStartOffset, es->str->data + explainPlanEnd);
-    }
-    else
-    {
-        planCopy = MemoryContextStrdup(traceMemoryContext, es->str->data);
-        stringPlanParts = MakeNodesPlanStringsJson(es->str->data, es->str->len);
-    }
-    if (stringPlanParts)
-    {
-        InitExecutorNodes(queryDesc->planstate, stringPlanParts);
-        ListFree(stringPlanParts);
-    }
+	if (writeMode == TEXT_WRITE_MODE)
+	{
+		planCopy = pnstrdup(es->str->data + explainPlanStartOffset, explainPlanEnd - explainPlanStartOffset);
+		if (ExecuteNodesStateNeedInit())
+			stringPlanParts = MakeNodesPlanStringsText(es->str->data + explainPlanStartOffset, es->str->data + explainPlanEnd);
+	}
+	else
+	{
+		planCopy = pnstrdup(es->str->data, es->str->len);
+		if (ExecuteNodesStateNeedInit())
+			stringPlanParts = MakeNodesPlanStringsJson(es->str->data, es->str->len);
+	}
+	if (stringPlanParts)
+	{
+		InitExecutorNodes(queryDesc->planstate, stringPlanParts);
+		ListFree(stringPlanParts);
+	}
 
-    MemoryContextSwitchTo(old);
-    return planCopy;
+	MemoryContextSwitchTo(old);
+	return planCopy;
+}
+
+#if PG_MAJORVERSION_NUM >= 18
+static void
+TraceSessionExecutorRun(QueryDesc *queryDesc, ScanDirection direction, uint64 count)
+#else
+static void
+TraceSessionExecutorRun(QueryDesc *queryDesc, ScanDirection direction, uint64 count, bool execute_once)
+#endif
+{
+	char	   *planCopy;
+	struct timespec time;
+	uint64		executionStarted;
+
+	if (writeMode == JSON_WRITE_MODE && !isFirstNodeCall)
+	{
+		TracePrintf(",\n");
+	}
+
+	planCopy = BeforeExecution(queryDesc);
+
+	clock_gettime(CLOCKTYPE, &time);
+	executionStarted = time.tv_sec * 1000000000L + time.tv_nsec;
+
+	ExecutorRunNestLevel++;
+
+	PG_TRY();
+	{
+#if PG_MAJORVERSION_NUM >= 18
+		if (prev_ExecutorRun_hook)
+			(*prev_ExecutorRun_hook) (queryDesc, direction, count);
+		else
+			standard_ExecutorRun(queryDesc, direction, count);
+#else
+		if (prev_ExecutorRun_hook)
+			(*prev_ExecutorRun_hook) (queryDesc, direction, count, execute_once);
+		else
+			standard_ExecutorRun(queryDesc, direction, count, execute_once);
+#endif
+	}
+	PG_FINALLY();
+	{
+		uint64		timeDiff;
+
+		ExecutorRunNestLevel--;
+
+		clock_gettime(CLOCKTYPE, &time);
+		timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - executionStarted;
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE. Execution finished for %lu nanosec\n", timeDiff);
+		else
+			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
+
+		AfterExecution(queryDesc, planCopy);
+		isFirstNodeCall = false;
+	}
+	PG_END_TRY();
 }
 
 
 static void
-TraceSessionExecutorRun(QueryDesc* queryDesc, ScanDirection direction, uint64 count, bool execute_once)
+TraceSessionExecutorStart(QueryDesc *queryDesc, int eflags)
 {
-    bool traceWasOn = false;
-    char* planCopy;
-    if (traceMemoryContext)
-    {
-        planCopy = BeforeExecution(queryDesc);
-        traceWasOn = true;
-    }
+	ExecuteNodesStateNew(queryDesc);
+	PG_TRY();
+	{
+		if (prev_ExecutorStart_hook)
+			(*prev_ExecutorStart_hook) (queryDesc, eflags);
+		else
+			standard_ExecutorStart(queryDesc, eflags);
+	}
+	PG_CATCH();
+	{
+		ExecuteNodesStatePop();
+		ExecuteNodesStateDelete(queryDesc);
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
 
-
-    if (prev_ExecutorRun_hook)
-        (*prev_ExecutorRun_hook) (queryDesc, direction, count, execute_once);
-    else
-        standard_ExecutorRun(queryDesc, direction, count, execute_once);
-
-    //if it is the end of Session Trace, we should close trace file
-    if (traceWasOn)
-    {
-        AfterExecution(queryDesc, planCopy);
-    }
+	ExecuteNodesDeleteRegister(queryDesc);
+	ExecuteNodesStatePop();
 }
 
 
-//find the plan field in explain jsonb
-static JsonbValue*
-FindField(JsonbValue* json, char* field, size_t len)
+/* find the plan field in explain jsonb */
+static JsonbValue *
+FindField(JsonbValue *json, char *field, size_t len)
 {
-    JsonbPair* pairs = json->val.object.pairs;
-    Assert(json->type == jbvObject);
+	JsonbPair  *pairs = json->val.object.pairs;
 
-    for (int i = 0; i < json->val.object.nPairs; i++)
-    {
-        if (len != (size_t) pairs[i].key.val.string.len)
-            continue;
-        if (!strncmp(pairs[i].key.val.string.val, field, len))
-        {
-            return &pairs[i].value;
-        }
-    }
-    return NULL;
-}
+	Assert(json->type == jbvObject);
 
-
-static void
-AddExplainJsonbToNode(JsonbValue* planNode, UprobeList* strNodes)
-{
-    Jsonb* jsonb = JsonbValueToJsonb(planNode);
-    char* stringJsonb = JsonbToCString(NULL, &jsonb->root, VARSIZE(jsonb));
-    ListAdd(strNodes, stringJsonb);
-    pfree(jsonb);
+	for (int i = 0; i < json->val.object.nPairs; i++)
+	{
+		if (len != (size_t) pairs[i].key.val.string.len)
+			continue;
+		if (!strncmp(pairs[i].key.val.string.val, field, len))
+		{
+			return &pairs[i].value;
+		}
+	}
+	return NULL;
 }
 
 
 static void
-JsonbDeleteField(JsonbValue* json, JsonbValue* value)
+AddExplainJsonbToNode(JsonbValue *planNode, UprobeList *strNodes)
 {
-    JsonbPair* pairs = json->val.object.pairs;
-    int nPairs = json->val.object.nPairs;
-    Assert(json->type == jbvObject);
+	Jsonb	   *jsonb = JsonbValueToJsonb(planNode);
+	char	   *stringJsonb = JsonbToCString(NULL, &jsonb->root, VARSIZE(jsonb));
 
-    for (int i = 0; i < nPairs; i++)
-    {
-        if (&pairs[i].value == value)
-        {
-            json->val.object.nPairs--;
-            if (i == nPairs - 1)
-                break;
-            memmove(&pairs[i], &pairs[i + 1], sizeof(JsonbPair) * (nPairs - i - 1));
-            break;
-        }
-    }
+	ListAdd(strNodes, stringJsonb);
+	pfree(jsonb);
 }
 
 
 static void
-MakeNodesRecursive(JsonbValue* planNode, UprobeList* strNodes)
+JsonbDeleteField(JsonbValue *json, JsonbValue *value)
 {
-    JsonbValue* subPlanNodes = FindField(planNode, "Plans", sizeof("Plans") - 1);
-    JsonbValue subPlans;
+	JsonbPair  *pairs = json->val.object.pairs;
+	int			nPairs = json->val.object.nPairs;
 
-    if (subPlanNodes != NULL)
-    {
-        subPlans = *subPlanNodes;
-        JsonbDeleteField(planNode, subPlanNodes);
-    }
-    else
-    {
-        subPlans.val.array.nElems = 0;
-    }
-    AddExplainJsonbToNode(planNode, strNodes);
+	Assert(json->type == jbvObject);
 
-    if (subPlanNodes == NULL)
-        return;
-    for (int i = 0; i < subPlans.val.array.nElems; i++)
-    {
-        MakeNodesRecursive(&subPlans.val.array.elems[i], strNodes);
-    }
+	for (int i = 0; i < nPairs; i++)
+	{
+		if (&pairs[i].value == value)
+		{
+			json->val.object.nPairs--;
+			if (i == nPairs - 1)
+				break;
+			memmove(&pairs[i], &pairs[i + 1], sizeof(JsonbPair) * (nPairs - i - 1));
+			break;
+		}
+	}
 }
 
 
-static UprobeList*
-MakeNodesPlanStringsJson(char* explainString, size_t len)
+static void
+MakeNodesRecursive(JsonbValue *planNode, UprobeList *strNodes)
 {
-    JsonbValue* explain = jsonToJsonbValue(explainString, len);
-    JsonbValue* planNode;
-    UprobeList* result;
-    if (explain == NULL)
-        return NULL;
+	JsonbValue *subPlanNodes = FindField(planNode, "Plans", sizeof("Plans") - 1);
+	JsonbValue	subPlans;
 
-    planNode = FindField(explain, "Plan", sizeof("Plan") - 1);
-    if (!planNode)
-        return NULL;
-    ListInit(&result, (CompareFunction) strcmp, CurrentMemoryContext);
-    MakeNodesRecursive(planNode, result);
-    return result;
+	if (subPlanNodes != NULL)
+	{
+		subPlans = *subPlanNodes;
+		JsonbDeleteField(planNode, subPlanNodes);
+	}
+	else
+	{
+		subPlans.val.array.nElems = 0;
+	}
+	AddExplainJsonbToNode(planNode, strNodes);
+
+	if (subPlanNodes == NULL)
+		return;
+	for (int i = 0; i < subPlans.val.array.nElems; i++)
+	{
+		MakeNodesRecursive(&subPlans.val.array.elems[i], strNodes);
+	}
 }
 
 
-static UprobeList*
-MakeNodesPlanStringsText(char* startPlanExplain, char* endPlanExplain)
+static UprobeList *
+MakeNodesPlanStringsJson(char *explainString, size_t len)
 {
-    char* currentNodeExplain = startPlanExplain;
-    UprobeList* result;
-    ListInit(&result, (CompareFunction) strcmp, CurrentMemoryContext);
-    while (true)
-    {
-        char* nextNodeSymbol = strstr(currentNodeExplain, "->");
-        char* CTESymbol = strstr(currentNodeExplain, "CTE");
-        //                                                                      +4 for skipping "CTE "
-        if (CTESymbol != NULL && CTESymbol < nextNodeSymbol && strncmp(CTESymbol + 4, "Scan on", sizeof("Scan on") - 1))
-        {
-            CTESymbol[-1] = '\0';
-            ListAdd(result, currentNodeExplain);
-            //we skip next node symbol
-            nextNodeSymbol[0] = ' ';
-            nextNodeSymbol[1] = ' ';
-            currentNodeExplain = CTESymbol + 4; //+4 for skipping "CTE "
-            continue;
-        }
-        if (!nextNodeSymbol || nextNodeSymbol >= endPlanExplain)
-        {
-            break;
-        }
-        nextNodeSymbol[0] = '\0';
-        ListAdd(result, currentNodeExplain);
-        currentNodeExplain = nextNodeSymbol + 4;
-    }
-    endPlanExplain[0] = '\0';
-    ListAdd(result, currentNodeExplain);
-    return result;
+	JsonbValue *explain = jsonToJsonbValue(explainString, len);
+	JsonbValue *planNode;
+	UprobeList *result;
+
+	if (explain == NULL)
+		return NULL;
+
+	planNode = FindField(explain, "Plan", sizeof("Plan") - 1);
+	if (!planNode)
+		return NULL;
+	ListInit(&result, (CompareFunction) strcmp, CurrentMemoryContext);
+	MakeNodesRecursive(planNode, result);
+	return result;
+}
+
+
+static UprobeList *
+MakeNodesPlanStringsText(char *startPlanExplain, char *endPlanExplain)
+{
+	char	   *currentNodeExplain = startPlanExplain;
+	UprobeList *result;
+
+	ListInit(&result, (CompareFunction) strcmp, CurrentMemoryContext);
+	while (true)
+	{
+		char	   *nextNodeSymbol = strstr(currentNodeExplain, "->");
+		char	   *CTESymbol = strstr(currentNodeExplain, "CTE");
+
+		/* +4 for skipping "CTE " */
+		if (CTESymbol != NULL && CTESymbol < nextNodeSymbol && strncmp(CTESymbol + 4, "Scan on", sizeof("Scan on") - 1))
+		{
+			CTESymbol[-1] = '\0';
+			ListAdd(result, currentNodeExplain);
+			/* we skip next node symbol */
+			nextNodeSymbol[0] = ' ';
+			nextNodeSymbol[1] = ' ';
+			/* +4 for skipping"CTE " */
+			currentNodeExplain = CTESymbol + 4;
+			continue;
+		}
+		if (!nextNodeSymbol || nextNodeSymbol >= endPlanExplain)
+		{
+			break;
+		}
+		nextNodeSymbol[0] = '\0';
+		ListAdd(result, currentNodeExplain);
+		currentNodeExplain = nextNodeSymbol + 4;
+	}
+	endPlanExplain[0] = '\0';
+	ListAdd(result, currentNodeExplain);
+	return result;
 }

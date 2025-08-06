@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "trace_data_in_plan.json",
+  "title": "Trace data in explain output",
+  "type": "object",
+  "properties": {
+    "maxTime": {
+      "type": "number"
+    },
+    "totalCalls": {
+      "type": "number"
+    },
+    "totalTimeSum": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "maxTime",
+    "totalCalls",
+    "totalTimeSum"
+  ]
+}

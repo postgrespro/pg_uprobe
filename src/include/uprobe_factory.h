@@ -6,28 +6,29 @@
 
 typedef enum
 {
-    INVALID_TYPE,
-    TIME, HIST, MEM, LOCK_ACQUIRE, LOCK_RELEASE
+	INVALID_TYPE,
+	TIME, HIST, MEM, LOCK_ACQUIRE, LOCK_RELEASE
 } UprobeAttachType;
 
 
 typedef struct UprobeAttach
 {
-    UprobeAttachType type;
-    UprobeAttachInterface* impl;
+	UprobeAttachType type;
+	UprobeAttachInterface *impl;
 } UprobeAttach;
 
 
-typedef struct UprobeStorage* (*StorageInitFunc)(const char* symbol);
+typedef struct UprobeStorage *(*StorageInitFunc) (const char *symbol);
 
-typedef struct UprobeAttachInterface* (*UprobeInterfaceInitFunc)(const char* symbol);
+typedef struct UprobeAttachInterface *(*UprobeInterfaceInitFunc) (const char *symbol);
 
 
-extern void CreateUprobeAttachForType(const char* type, const char* symbol, UprobeAttach* UprobeAttach);
+extern void CreateUprobeAttachForType(const char *type, const char *symbol, UprobeAttach *UprobeAttach);
 
-extern const char* GetCharNameForUprobeAttachType(UprobeAttachType type);
+extern const char *GetCharNameForUprobeAttachType(UprobeAttachType type);
 
-extern UprobeStorage* GetUprobeStorageForType(UprobeAttachType type, const char* symbol);
+extern UprobeStorage *GetUprobeStorageForType(UprobeAttachType type, const char *symbol);
 
-extern UprobeAttachType GetTypeByCharName(const char* name);
-#endif
+extern UprobeAttachType GetTypeByCharName(const char *name);
+
+#endif							/* UPROBE_FACTORY_H */

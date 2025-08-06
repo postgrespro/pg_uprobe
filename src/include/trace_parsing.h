@@ -3,6 +3,10 @@
 
 #include "uprobe_attach_interface.h"
 
-extern UprobeAttachInterface* ParsingUprobeGet(void);
+extern UprobeAttachInterface *ParsingUprobeGet(void);
 
-#endif
+extern void ParsingWriteData(void);
+
+extern void ParsingClearData(void);
+
+#endif							/* TRACE_PARSING_H */

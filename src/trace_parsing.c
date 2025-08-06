@@ -9,62 +9,95 @@
 
 typedef struct ParsingTrace
 {
-    uint64 startTime;
+	/* using 0 as invalid val */
+	uint64		parsingTime;
+	HTAB	   *bufferLocksStat;
+	uint64		startTime;
 } ParsingTrace;
 
 
-static ParsingTrace parsingTrace = {.startTime = 0};
+static ParsingTrace parsingTrace =
+{
+	.startTime = 0,.bufferLocksStat = 0,.parsingTime = 0
+};
 
-static void ParsingTraceInFunc(void* data);
-static void ParsingTraceRetFunc(void* data);
-static void ParsingTraceCleanFunc(UprobeAttachInterface* uprobe);
+static void ParsingTraceInFunc(void *data);
+static void ParsingTraceRetFunc(void *data);
+static void ParsingTraceCleanFunc(UprobeAttachInterface *uprobe);
 
 
 static void
-ParsingTraceInFunc(void* data)
+ParsingTraceInFunc(void *data)
 {
-    struct timespec time;
-    clock_gettime(CLOCK_MONOTONIC, &time);
+	struct timespec time;
 
-    parsingTrace.startTime = time.tv_sec * 1000000000L + time.tv_nsec;
+	LockOnBuffersTraceStatPush();
 
-    LockOnBuffersTraceStatPush();
+	clock_gettime(CLOCK_MONOTONIC, &time);
+
+	parsingTrace.startTime = time.tv_sec * 1000000000L + time.tv_nsec;
 }
 
 
 static void
-ParsingTraceRetFunc(void* data)
+ParsingTraceRetFunc(void *data)
 {
-    struct timespec time;
-    uint64 timeDiff;
-    clock_gettime(CLOCK_MONOTONIC, &time);
+	struct timespec time;
 
-    timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - parsingTrace.startTime;
-    if (writeMode == TEXT_WRITE_MODE)
-        TracePrintf("TRACE PARSE. parsingTime %lu nanosec\n", timeDiff);
-    else
-        TracePrintf("{\n\"parsingTime\": \"%lu nanosec\",\n", timeDiff);
+	clock_gettime(CLOCK_MONOTONIC, &time);
 
-    LockOnBuffersTraceDumpCurrentStatWithPrefix("Buffer locks usage for parsing", "LWLockParsing");
-    LockOnBuffersTraceStatPop();
+	parsingTrace.parsingTime = time.tv_sec * 1000000000L + time.tv_nsec - parsingTrace.startTime;
+
+	if (parsingTrace.bufferLocksStat)
+		hash_destroy(parsingTrace.bufferLocksStat);
+
+	parsingTrace.bufferLocksStat = LockOnBuffersTraceStatPopAndGet();
 }
 
 
 static void
-ParsingTraceCleanFunc(UprobeAttachInterface* uprobe)
+ParsingTraceCleanFunc(UprobeAttachInterface *uprobe)
 {
-    pfree(uprobe);
+	pfree(uprobe);
 }
 
 
-UprobeAttachInterface*
+UprobeAttachInterface *
 ParsingUprobeGet(void)
 {
-    UprobeAttachInterface* res = (UprobeAttachInterface*) palloc0(sizeof(UprobeAttachInterface));
-    res->cleanFunc = ParsingTraceCleanFunc;
-    res->inFunc = ParsingTraceInFunc;
-    res->numArgs = 0;
-    res->retFunc = ParsingTraceRetFunc;
-    res->targetSymbol = "raw_parser";
-    return res;
+	UprobeAttachInterface *res = (UprobeAttachInterface *) palloc0(sizeof(UprobeAttachInterface));
+
+	res->cleanFunc = ParsingTraceCleanFunc;
+	res->inFunc = ParsingTraceInFunc;
+	res->numArgs = 0;
+	res->retFunc = ParsingTraceRetFunc;
+	res->targetSymbol = "raw_parser";
+	return res;
+}
+
+
+void
+ParsingWriteData(void)
+{
+	if (parsingTrace.parsingTime == 0)
+		return;
+
+	if (writeMode == TEXT_WRITE_MODE)
+		TracePrintf("TRACE PARSE. parsingTime %lu nanosec\n", parsingTrace.parsingTime);
+	else
+		TracePrintf("\n\"parsingTime\": \"%lu nanosec\",\n", parsingTrace.parsingTime);
+
+	LockOnBuffersTraceWriteStatWithName(parsingTrace.bufferLocksStat, "LWLockParsing");
+
+	ParsingClearData();
+}
+
+void
+ParsingClearData(void)
+{
+	if (parsingTrace.bufferLocksStat)
+		hash_destroy(parsingTrace.bufferLocksStat);
+
+	parsingTrace.bufferLocksStat = NULL;
+	parsingTrace.parsingTime = 0;
 }

@@ -5,17 +5,17 @@
 
 typedef enum TraceDataWriteMode
 {
-    TEXT_WRITE_MODE,
-    JSON_WRITE_MODE
-} TraceDataWriteMode;
+	TEXT_WRITE_MODE,
+	JSON_WRITE_MODE
+}			TraceDataWriteMode;
 
-extern int writeMode;
+extern int	writeMode;
 extern bool isExecuteTime;
 
 extern void SessionTraceStart(void);
 
-extern void SessionTraceStop(void);
+extern void SessionTraceStop(bool closeFile);
 
 extern void SessionTraceInit(void);
 
-#endif
+#endif							/* TRACE_SESSION_H */

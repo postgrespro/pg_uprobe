@@ -5,3 +5,4 @@ third_party
 *.o
 *.so
 node_names.h
+tests/__pycache__

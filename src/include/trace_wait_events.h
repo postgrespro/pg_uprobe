@@ -7,7 +7,7 @@
 #include "uprobe_attach_interface.h"
 
 
-extern UprobeAttachInterface* TraceWaitEventsUprobesGet(size_t* resSize);
+extern UprobeAttachInterface *TraceWaitEventsUprobesGet(size_t *resSize);
 
 extern void TraceWaitEventsUprobesClean(void);
 
@@ -19,4 +19,4 @@ extern void SignalWaitEventStart(uint64 time);
 
 extern void SignalWaitEventEnd(uint64 time);
 
-#endif
+#endif							/* TRACE_WAIT_EVENTS_H */

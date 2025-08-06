@@ -24,41 +24,47 @@
 #define MESSAGE_CUSTOM 4
 
 
-//base struct for all messages, should be first field in all messages
+/* base struct for all messages, should be first field in all messages */
 typedef struct Message
 {
-    uint16 type;
-    uint16 size;
+	uint16		type;
+	uint16		size;
 } Message;
 
 
 typedef struct MessageNewSharedUprobe
 {
-    Message base;
-    uint8 uprobeType;
+	Message		base;
+	uint8		uprobeType;
 } MessageNewSharedUprobe;
 
 
 typedef struct MessageWriteStat
 {
-    Message base;
-    bool shouldEmptyData;
-    Latch* latch;    //if not null will be set after stat is written
+	Message		base;
+	bool		shouldEmptyData;
+	/* if not null will be set after stat is written */
+	Latch	   *latch;
 } MessageWriteStat;
 
 
 typedef struct MessageDeleteSharedUprobe
 {
-    Message base;
-    bool shouldWriteStat;
-    Latch* latch;    //if (not null and shouldWriteStat is true) will be set after stat is written
+	Message		base;
+	bool		shouldWriteStat;
+
+	/*
+	 * if (not null and shouldWriteStat is true) will be set after stat is
+	 * written
+	 */
+	Latch	   *latch;
 } MessageDeleteSharedUprobe;
 
 
 typedef struct MessageSymbol
 {
-    Message base;
-    char symbol[FLEXIBLE_ARRAY_MEMBER];
+	Message		base;
+	char		symbol[FLEXIBLE_ARRAY_MEMBER];
 } MessageSymbol;
 
 
@@ -69,9 +75,9 @@ extern void MessageBufferInit(void);
 
 extern void MessageBufferDelete(void);
 
-extern int MessageBufferPut(const Message* mes, uint32 n, char* symbol);
+extern int	MessageBufferPut(const Message *mes, uint32 n, char *symbol);
 
-extern int MessageBufferGet(Message* mes, uint32 bufferSize);
+extern int	MessageBufferGet(Message *mes, uint32 bufferSize);
 
 
-#endif      /*UPROBE_MESSAGE_BUFFER_H*/
+#endif							/* UPROBE_MESSAGE_BUFFER_H */

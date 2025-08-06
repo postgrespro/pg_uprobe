@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trace session output for one Query",
+  "type": "object",
+  "properties": {
+    "parsingTime": {
+      "type": "string"
+    },
+    "planningTime": {
+      "type": "string"
+    },
+    "LWLockPlanning": {
+      "type": "array",
+      "items": {
+        "$ref": "locks_on_buffers.json"
+      }
+    },
+    "executionStart": {
+      "type": "string"
+    },
+    "explain": {
+      "type": "object",
+      "properties": {
+        "Query Text": {
+          "type": "string"
+        },
+        "Plan": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "Query Text",
+        "Plan"
+      ]
+    },
+    "executionEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "execution_event.json"
+      }
+    },
+    "executionTime": {
+      "type": "string"
+    },
+    "executorNodeStatInPlan": {
+      "type": "object",
+      "properties": {
+        "traceData": {
+          "$ref": "trace_data_in_plan.json"
+        }
+      },
+      "required": [
+        "traceData"
+      ]
+    },
+    "exprNodeStat": {
+      "type": "array",
+      "items": {
+        "$ref": "expr_node_stat.json"
+      }
+    },
+    "locksInsidePortalRun": {
+      "type": "array",
+      "items": {
+        "$ref": "locks_on_buffers.json"
+      }
+    },
+    "locksOutsidePortalRun": {
+      "type": "array",
+      "items": {
+        "$ref": "locks_on_buffers.json"
+      }
+    },
+    "waitEventStat": {
+      "type": "array",
+      "items": {
+        "$ref": "wait_event.json"
+      }
+    }
+  },
+  "required": [
+    "executionStart",
+    "explain",
+    "executionEvents",
+    "executionTime",
+    "executorNodeStatInPlan",
+    "exprNodeStat"
+  ]
+}

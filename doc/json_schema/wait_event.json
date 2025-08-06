@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "wait_event.json",
+  "title": "Wait event stat object",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number"
+    },
+    "timeSum": {
+      "type": "string"
+    },
+    "maxTime": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "count",
+    "timeSum",
+    "maxTime"
+  ]
+}

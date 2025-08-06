@@ -3,5 +3,6 @@
 #include "postgres.h"
 #include "utils/jsonb.h"
 
-extern JsonbValue* jsonToJsonbValue(char* json, size_t len);
-#endif
+extern JsonbValue *jsonToJsonbValue(char *json, size_t len);
+
+#endif							/* JSON_TO_JSONBVALUE_PARSER_H */

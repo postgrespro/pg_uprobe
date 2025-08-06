@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "expr_node_stat.json",
+  "title": "Expression Node stat after execution",
+  "type": "object",
+  "properties": {
+    "node": {
+      "type": "string"
+    },
+    "totalCalls": {
+      "type": "number"
+    },
+    "totalTimeSum": {
+      "type": "string"
+    },
+    "maxTime": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "node",
+    "totalCalls",
+    "totalTimeSum",
+    "maxTime"
+  ]
+}

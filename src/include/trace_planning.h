@@ -3,6 +3,10 @@
 
 #include "uprobe_attach_interface.h"
 
-extern void PlanningUprobesGet(UprobeAttachInterface** resUprobes);
+extern void PlanningUprobesGet(UprobeAttachInterface **resUprobes, MemoryContext context);
 
-#endif
+extern void PlanningWriteData(void);
+
+extern void PlanningClearData(void);
+
+#endif							/* TRACE_PLANNING_H */

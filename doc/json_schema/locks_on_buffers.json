@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "locks_on_buffers.json",
+  "title": "Schema for locks taken on buffer pages",
+  "type": "object",
+  "properties": {
+    "bufferTag": {
+      "type": "object",
+      "properties": {
+        "spcOid": {
+          "type": "number"
+        },
+        "spcName": {
+          "type": "string"
+        },
+        "dbOid": {
+          "type": "number"
+        },
+        "dbName": {
+          "type": "string"
+        },
+        "relNumber": {
+          "type": "number"
+        },
+        "relName": {
+          "type": "string"
+        },
+        "relKind": {
+          "type": "string"
+        },
+        "forkName": {
+          "type": "string"
+        },
+        "blockNumber": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "spcOid",
+        "spcName",
+        "dbOid",
+        "dbName",
+        "relNumber",
+        "relName",
+        "relKind",
+        "forkName",
+        "blockNumber"
+      ]
+    },
+    "exclusive": {
+      "type": "object",
+      "properties": {
+        "totalCalls": {
+          "type": "number"
+        },
+        "sleepCount": {
+          "type": "number"
+        },
+        "sleepTimeSum": {
+          "type": "string"
+        },
+        "maxSleepTime": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "totalCalls",
+        "sleepCount",
+        "sleepTimeSum",
+        "maxSleepTime"
+      ]
+    },
+    "shared": {
+      "type": "object",
+      "properties": {
+        "totalCalls": {
+          "type": "number"
+        },
+        "sleepCount": {
+          "type": "number"
+        },
+        "sleepTimeSum": {
+          "type": "string"
+        },
+        "maxSleepTime": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "totalCalls",
+        "sleepCount",
+        "sleepTimeSum",
+        "maxSleepTime"
+      ]
+    }
+  },
+  "required": [
+    "bufferTag",
+    "exclusive",
+    "shared"
+  ]
+}

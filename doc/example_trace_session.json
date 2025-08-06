@@ -1,10 +1,10 @@
-[
-  {
-    "parsingTime": "53699 nanosec",
-    "planningTime": "1821776 nanosec",
-    "LWLockPlanning": {
-      "info": "Buffer locks usage for planning",
-      "stat": [
+{
+  "pid": 174172,
+  "queries": [
+    {
+      "parsingTime": "45888 nanosec",
+      "planningTime": "639993 nanosec",
+      "LWLockPlanning": [
         {
           "bufferTag": {
             "spcOid": 1663,
@@ -86,6 +86,31 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
+            "relNumber": 1249,
+            "relName": "pg_catalog.pg_attribute",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 61
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
             "relNumber": 2654,
             "relName": "pg_catalog.pg_amop_opr_fam_index",
             "relKind": "i",
@@ -141,6 +166,31 @@
             "relKind": "i",
             "forkName": "main",
             "blockNumber": 2
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1249,
+            "relName": "pg_catalog.pg_attribute",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 27
           },
           "exclusive": {
             "totalCalls": 0,
@@ -261,11 +311,11 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
-            "relNumber": 2654,
-            "relName": "pg_catalog.pg_amop_opr_fam_index",
+            "relNumber": 2685,
+            "relName": "pg_catalog.pg_namespace_oid_index",
             "relKind": "i",
             "forkName": "main",
-            "blockNumber": 1
+            "blockNumber": 0
           },
           "exclusive": {
             "totalCalls": 0,
@@ -286,11 +336,11 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
-            "relNumber": 16463,
-            "relName": "public.t_pkey",
+            "relNumber": 2654,
+            "relName": "pg_catalog.pg_amop_opr_fam_index",
             "relKind": "i",
             "forkName": "main",
-            "blockNumber": 0
+            "blockNumber": 1
           },
           "exclusive": {
             "totalCalls": 0,
@@ -324,7 +374,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -349,7 +399,32 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 6,
+            "totalCalls": 3,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2602,
+            "relName": "pg_catalog.pg_amop",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 2
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -374,7 +449,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -386,11 +461,11 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
-            "relNumber": 2602,
-            "relName": "pg_catalog.pg_amop",
+            "relNumber": 2615,
+            "relName": "pg_catalog.pg_namespace",
             "relKind": "r",
             "forkName": "main",
-            "blockNumber": 1
+            "blockNumber": 0
           },
           "exclusive": {
             "totalCalls": 0,
@@ -424,7 +499,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -465,7 +540,7 @@
             "relName": "pg_catalog.pg_attribute_relid_attnum_index",
             "relKind": "i",
             "forkName": "main",
-            "blockNumber": 10
+            "blockNumber": 11
           },
           "exclusive": {
             "totalCalls": 0,
@@ -474,7 +549,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -486,11 +561,11 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
-            "relNumber": 1249,
-            "relName": "pg_catalog.pg_attribute",
-            "relKind": "r",
+            "relNumber": 2685,
+            "relName": "pg_catalog.pg_namespace_oid_index",
+            "relKind": "i",
             "forkName": "main",
-            "blockNumber": 25
+            "blockNumber": 1
           },
           "exclusive": {
             "totalCalls": 0,
@@ -499,7 +574,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -561,6 +636,31 @@
             "spcName": "pg_default",
             "dbOid": 5,
             "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 4
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
             "relNumber": 2659,
             "relName": "pg_catalog.pg_attribute_relid_attnum_index",
             "relKind": "i",
@@ -574,7 +674,7 @@
             "maxSleepTime": "0 nanosec"
           },
           "shared": {
-            "totalCalls": 2,
+            "totalCalls": 1,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -625,56 +725,6 @@
           },
           "shared": {
             "totalCalls": 1,
-            "sleepCount": 0,
-            "sleepTimeSum": "0 nanosec",
-            "maxSleepTime": "0 nanosec"
-          }
-        },
-        {
-          "bufferTag": {
-            "spcOid": 1663,
-            "spcName": "pg_default",
-            "dbOid": 5,
-            "dbName": "postgres",
-            "relNumber": 1259,
-            "relName": "pg_catalog.pg_class",
-            "relKind": "r",
-            "forkName": "main",
-            "blockNumber": 1
-          },
-          "exclusive": {
-            "totalCalls": 0,
-            "sleepCount": 0,
-            "sleepTimeSum": "0 nanosec",
-            "maxSleepTime": "0 nanosec"
-          },
-          "shared": {
-            "totalCalls": 1,
-            "sleepCount": 0,
-            "sleepTimeSum": "0 nanosec",
-            "maxSleepTime": "0 nanosec"
-          }
-        },
-        {
-          "bufferTag": {
-            "spcOid": 1663,
-            "spcName": "pg_default",
-            "dbOid": 5,
-            "dbName": "postgres",
-            "relNumber": 1249,
-            "relName": "pg_catalog.pg_attribute",
-            "relKind": "r",
-            "forkName": "main",
-            "blockNumber": 58
-          },
-          "exclusive": {
-            "totalCalls": 0,
-            "sleepCount": 0,
-            "sleepTimeSum": "0 nanosec",
-            "maxSleepTime": "0 nanosec"
-          },
-          "shared": {
-            "totalCalls": 2,
             "sleepCount": 0,
             "sleepTimeSum": "0 nanosec",
             "maxSleepTime": "0 nanosec"
@@ -741,6 +791,56 @@
             "relKind": "i",
             "forkName": "main",
             "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 188450,
+            "relName": "public.t_pkey",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 0
           },
           "exclusive": {
             "totalCalls": 0,
@@ -855,1011 +955,1338 @@
             "maxSleepTime": "0 nanosec"
           }
         }
-      ]
-    },
-    "explain": {
-      "Query Text": "select * from t where id = 1;",
-      "Plan": {
-        "Node Type": "Index Only Scan",
-        "Parallel Aware": false,
-        "Async Capable": false,
-        "Scan Direction": "Forward",
-        "Index Name": "t_pkey",
-        "Relation Name": "t",
-        "Schema": "public",
+      ],
+      "executionStart": "2025:07:02T13:20:50.100",
+      "explain": {
+        "Query Text": "select * from t where id = 1;",
+        "Plan": {
+          "Node Type": "Index Only Scan",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Scan Direction": "Forward",
+          "Index Name": "t_pkey",
+          "Relation Name": "t",
+          "Schema": "public",
+          "Alias": "t",
+          "Startup Cost": 0.15,
+          "Total Cost": 8.17,
+          "Plan Rows": 1,
+          "Plan Width": 4,
+          "Output": [
+            "id"
+          ],
+          "Index Cond": "(t.id = 1)"
+        },
+        "Settings": {}
+      },
+      "executionEvents": [
+        {
+          "node": "IndexScanState",
+          "explain": {
+            "Alias": "t",
+            "Output": [
+              "id"
+            ],
+            "Schema": "public",
+            "Node Type": "Index Only Scan",
+            "Plan Rows": 1,
+            "Index Cond": "(t.id = 1)",
+            "Index Name": "t_pkey",
+            "Plan Width": 4,
+            "Total Cost": 8.17,
+            "Startup Cost": 0.15,
+            "Async Capable": false,
+            "Relation Name": "t",
+            "Parallel Aware": false,
+            "Scan Direction": "Forward"
+          },
+          "executeTime": "38601 nanosec",
+          "LWLockStat": [
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 188450,
+                "relName": "public.t_pkey",
+                "relKind": "i",
+                "forkName": "main",
+                "blockNumber": 1
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 1,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            },
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 188447,
+                "relName": "public.t",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 0
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 1,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            },
+            {
+              "bufferTag": {
+                "spcOid": 1663,
+                "spcName": "pg_default",
+                "dbOid": 5,
+                "dbName": "postgres",
+                "relNumber": 1259,
+                "relName": "pg_catalog.pg_class",
+                "relKind": "r",
+                "forkName": "main",
+                "blockNumber": 0
+              },
+              "exclusive": {
+                "totalCalls": 0,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              },
+              "shared": {
+                "totalCalls": 1,
+                "sleepCount": 0,
+                "sleepTimeSum": "0 nanosec",
+                "maxSleepTime": "0 nanosec"
+              }
+            }
+          ]
+        },
+        {
+          "node": "IndexScanState",
+          "explain": {
+            "Alias": "t",
+            "Output": [
+              "id"
+            ],
+            "Schema": "public",
+            "Node Type": "Index Only Scan",
+            "Plan Rows": 1,
+            "Index Cond": "(t.id = 1)",
+            "Index Name": "t_pkey",
+            "Plan Width": 4,
+            "Total Cost": 8.17,
+            "Startup Cost": 0.15,
+            "Async Capable": false,
+            "Relation Name": "t",
+            "Parallel Aware": false,
+            "Scan Direction": "Forward"
+          },
+          "executeTime": "634 nanosec"
+        }
+      ],
+      "executionTime": "125338 nanosec",
+      "executorNodeStatInPlan": {
         "Alias": "t",
-        "Startup Cost": 0.15,
-        "Total Cost": 8.17,
-        "Plan Rows": 1,
-        "Plan Width": 4,
         "Output": [
           "id"
         ],
-        "Index Cond": "(t.id = 1)"
-      },
-      "Settings": {}
-    },
-    "executionEvents": [
-      {
-        "node": "IndexOnlyScanState",
-        "explain": {
-          "Alias": "t",
-          "Output": [
-            "id"
-          ],
-          "Schema": "public",
-          "Node Type": "Index Only Scan",
-          "Plan Rows": 1,
-          "Index Cond": "(t.id = 1)",
-          "Index Name": "t_pkey",
-          "Plan Width": 4,
-          "Total Cost": 8.17,
-          "Startup Cost": 0.15,
-          "Async Capable": false,
-          "Relation Name": "t",
-          "Parallel Aware": false,
-          "Scan Direction": "Forward"
-        },
-        "executeTime": "255042 nanosec",
-        "LWLockStat": [
-          {
-            "bufferTag": {
-              "spcOid": 1663,
-              "spcName": "pg_default",
-              "dbOid": 5,
-              "dbName": "postgres",
-              "relNumber": 16463,
-              "relName": "public.t_pkey",
-              "relKind": "i",
-              "forkName": "main",
-              "blockNumber": 1
-            },
-            "exclusive": {
-              "totalCalls": 0,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            },
-            "shared": {
-              "totalCalls": 1,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            }
-          },
-          {
-            "bufferTag": {
-              "spcOid": 1664,
-              "spcName": "pg_global",
-              "dbOid": 0,
-              "dbName": "(null)",
-              "relNumber": 1213,
-              "relName": "pg_catalog.pg_tablespace",
-              "relKind": "r",
-              "forkName": "main",
-              "blockNumber": 0
-            },
-            "exclusive": {
-              "totalCalls": 0,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            },
-            "shared": {
-              "totalCalls": 2,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            }
-          },
-          {
-            "bufferTag": {
-              "spcOid": 1663,
-              "spcName": "pg_default",
-              "dbOid": 5,
-              "dbName": "postgres",
-              "relNumber": 16460,
-              "relName": "public.t",
-              "relKind": "r",
-              "forkName": "main",
-              "blockNumber": 0
-            },
-            "exclusive": {
-              "totalCalls": 0,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            },
-            "shared": {
-              "totalCalls": 1,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            }
-          },
-          {
-            "bufferTag": {
-              "spcOid": 1663,
-              "spcName": "pg_default",
-              "dbOid": 5,
-              "dbName": "postgres",
-              "relNumber": 3455,
-              "relName": "pg_catalog.pg_class_tblspc_relfilenode_index",
-              "relKind": "i",
-              "forkName": "main",
-              "blockNumber": 1
-            },
-            "exclusive": {
-              "totalCalls": 0,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            },
-            "shared": {
-              "totalCalls": 2,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            }
-          },
-          {
-            "bufferTag": {
-              "spcOid": 1663,
-              "spcName": "pg_default",
-              "dbOid": 5,
-              "dbName": "postgres",
-              "relNumber": 1259,
-              "relName": "pg_catalog.pg_class",
-              "relKind": "r",
-              "forkName": "main",
-              "blockNumber": 1
-            },
-            "exclusive": {
-              "totalCalls": 0,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            },
-            "shared": {
-              "totalCalls": 1,
-              "sleepCount": 0,
-              "sleepTimeSum": "0 nanosec",
-              "maxSleepTime": "0 nanosec"
-            }
-          }
-        ]
-      },
-      {
-        "node": "IndexOnlyScanState",
-        "explain": {
-          "Alias": "t",
-          "Output": [
-            "id"
-          ],
-          "Schema": "public",
-          "Node Type": "Index Only Scan",
-          "Plan Rows": 1,
-          "Index Cond": "(t.id = 1)",
-          "Index Name": "t_pkey",
-          "Plan Width": 4,
-          "Total Cost": 8.17,
-          "Startup Cost": 0.15,
-          "Async Capable": false,
-          "Relation Name": "t",
-          "Parallel Aware": false,
-          "Scan Direction": "Forward"
-        },
-        "executeTime": "1122 nanosec"
-      }
-    ],
-    "executionTime": "621559 nanosec",
-    "executorNodeStatInPlan": {
-      "Alias": "t",
-      "Output": [
-        "id"
-      ],
-      "Schema": "public",
-      "Node Type": "Index Only Scan",
-      "Plan Rows": 1,
-      "Index Cond": "(t.id = 1)",
-      "Index Name": "t_pkey",
-      "Plan Width": 4,
-      "Total Cost": 8.17,
-      "Startup Cost": 0.15,
-      "Async Capable": false,
-      "Relation Name": "t",
-      "Parallel Aware": false,
-      "Scan Direction": "Forward",
-      "traceData": {
-        "maxTime": 255042,
-        "totalCalls": 2,
-        "totalTimeSum": 256164
-      }
-    },
-    "exprNodeStat": [],
-    "locksInsidePortalRun": [
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2662,
-          "relName": "pg_catalog.pg_class_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1664,
-          "spcName": "pg_global",
-          "dbOid": 0,
-          "dbName": "(null)",
-          "relNumber": 1213,
-          "relName": "pg_catalog.pg_tablespace",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2662,
-          "relName": "pg_catalog.pg_class_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 2
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1259,
-          "relName": "pg_catalog.pg_class",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      }
-    ],
-    "locksOutsidePortalRun": [
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2662,
-          "relName": "pg_catalog.pg_class_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1664,
-          "spcName": "pg_global",
-          "dbOid": 0,
-          "dbName": "(null)",
-          "relNumber": 1213,
-          "relName": "pg_catalog.pg_tablespace",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2662,
-          "relName": "pg_catalog.pg_class_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 2
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2663,
-          "relName": "pg_catalog.pg_class_relname_nsp_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2703,
-          "relName": "pg_catalog.pg_type_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2688,
-          "relName": "pg_catalog.pg_operator_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2689,
-          "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2659,
-          "relName": "pg_catalog.pg_attribute_relid_attnum_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2690,
-          "relName": "pg_catalog.pg_proc_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1259,
-          "relName": "pg_catalog.pg_class",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2690,
-          "relName": "pg_catalog.pg_proc_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2689,
-          "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 2
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 3455,
-          "relName": "pg_catalog.pg_class_tblspc_relfilenode_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 4,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2601,
-          "relName": "pg_catalog.pg_am",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2659,
-          "relName": "pg_catalog.pg_attribute_relid_attnum_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 10
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2617,
-          "relName": "pg_catalog.pg_operator",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2703,
-          "relName": "pg_catalog.pg_type_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1255,
-          "relName": "pg_catalog.pg_proc",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2688,
-          "relName": "pg_catalog.pg_operator_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2689,
-          "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1247,
-          "relName": "pg_catalog.pg_type",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1259,
-          "relName": "pg_catalog.pg_class",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 1
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 3,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 1249,
-          "relName": "pg_catalog.pg_attribute",
-          "relKind": "r",
-          "forkName": "main",
-          "blockNumber": 58
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2663,
-          "relName": "pg_catalog.pg_class_relname_nsp_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 0
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2663,
-          "relName": "pg_catalog.pg_class_relname_nsp_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 2
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 2,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      },
-      {
-        "bufferTag": {
-          "spcOid": 1663,
-          "spcName": "pg_default",
-          "dbOid": 5,
-          "dbName": "postgres",
-          "relNumber": 2688,
-          "relName": "pg_catalog.pg_operator_oid_index",
-          "relKind": "i",
-          "forkName": "main",
-          "blockNumber": 3
-        },
-        "exclusive": {
-          "totalCalls": 0,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        },
-        "shared": {
-          "totalCalls": 1,
-          "sleepCount": 0,
-          "sleepTimeSum": "0 nanosec",
-          "maxSleepTime": "0 nanosec"
-        }
-      }
-    ],
-    "waitEventStat": [
-      {
-        "name": "DataFileRead",
-        "count": 2,
-        "timeSum": "5370120 nanosec",
-        "maxTime": "917485 nanosec"
-      }
-    ]
-  },
-  {
-    "parsingTime": "37710 nanosec",
-    "planningTime": "28733 nanosec",
-    "explain": {
-      "Query Text": "select stop_session_trace();",
-      "Plan": {
-        "Node Type": "Result",
-        "Parallel Aware": false,
-        "Async Capable": false,
-        "Startup Cost": 0,
-        "Total Cost": 0.01,
+        "Schema": "public",
+        "Node Type": "Index Only Scan",
         "Plan Rows": 1,
+        "Index Cond": "(t.id = 1)",
+        "Index Name": "t_pkey",
         "Plan Width": 4,
-        "Output": [
-          "stop_session_trace()"
-        ]
+        "Total Cost": 8.17,
+        "Startup Cost": 0.15,
+        "Async Capable": false,
+        "Relation Name": "t",
+        "Parallel Aware": false,
+        "Scan Direction": "Forward",
+        "traceData": {
+          "maxTime": 38601,
+          "totalCalls": 2,
+          "totalTimeSum": 39235
+        }
       },
-      "Settings": {}
+      "exprNodeStat": [],
+      "locksInsidePortalRun": [
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2662,
+            "relName": "pg_catalog.pg_class_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 8
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1664,
+            "spcName": "pg_global",
+            "dbOid": 0,
+            "dbName": "(null)",
+            "relNumber": 1213,
+            "relName": "pg_catalog.pg_tablespace",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 41,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2662,
+            "relName": "pg_catalog.pg_class_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 2
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2679,
+            "relName": "pg_catalog.pg_index_indexrelid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1664,
+            "spcName": "pg_global",
+            "dbOid": 0,
+            "dbName": "(null)",
+            "relNumber": 2672,
+            "relName": "pg_catalog.pg_database_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 3,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2659,
+            "relName": "pg_catalog.pg_attribute_relid_attnum_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 3455,
+            "relName": "pg_catalog.pg_class_tblspc_relfilenode_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 17,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2659,
+            "relName": "pg_catalog.pg_attribute_relid_attnum_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 4
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2615,
+            "relName": "pg_catalog.pg_namespace",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1249,
+            "relName": "pg_catalog.pg_attribute",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 26
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2662,
+            "relName": "pg_catalog.pg_class_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2685,
+            "relName": "pg_catalog.pg_namespace_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 3455,
+            "relName": "pg_catalog.pg_class_tblspc_relfilenode_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 4
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 4,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 9
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2610,
+            "relName": "pg_catalog.pg_index",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        }
+      ],
+      "locksOutsidePortalRun": [
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2662,
+            "relName": "pg_catalog.pg_class_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1249,
+            "relName": "pg_catalog.pg_attribute",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 61
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 7,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1664,
+            "spcName": "pg_global",
+            "dbOid": 0,
+            "dbName": "(null)",
+            "relNumber": 1213,
+            "relName": "pg_catalog.pg_tablespace",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 3,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2662,
+            "relName": "pg_catalog.pg_class_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 2
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2663,
+            "relName": "pg_catalog.pg_class_relname_nsp_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2703,
+            "relName": "pg_catalog.pg_type_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2688,
+            "relName": "pg_catalog.pg_operator_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2689,
+            "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2659,
+            "relName": "pg_catalog.pg_attribute_relid_attnum_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2690,
+            "relName": "pg_catalog.pg_proc_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2690,
+            "relName": "pg_catalog.pg_proc_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 3455,
+            "relName": "pg_catalog.pg_class_tblspc_relfilenode_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 1
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 4,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2601,
+            "relName": "pg_catalog.pg_am",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2659,
+            "relName": "pg_catalog.pg_attribute_relid_attnum_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 11
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2617,
+            "relName": "pg_catalog.pg_operator",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2703,
+            "relName": "pg_catalog.pg_type_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1255,
+            "relName": "pg_catalog.pg_proc",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2689,
+            "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 4
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2688,
+            "relName": "pg_catalog.pg_operator_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2689,
+            "relName": "pg_catalog.pg_operator_oprname_l_r_n_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1247,
+            "relName": "pg_catalog.pg_type",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2663,
+            "relName": "pg_catalog.pg_class_relname_nsp_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2663,
+            "relName": "pg_catalog.pg_class_relname_nsp_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 2
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 2,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 1259,
+            "relName": "pg_catalog.pg_class",
+            "relKind": "r",
+            "forkName": "main",
+            "blockNumber": 0
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 3,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        },
+        {
+          "bufferTag": {
+            "spcOid": 1663,
+            "spcName": "pg_default",
+            "dbOid": 5,
+            "dbName": "postgres",
+            "relNumber": 2688,
+            "relName": "pg_catalog.pg_operator_oid_index",
+            "relKind": "i",
+            "forkName": "main",
+            "blockNumber": 3
+          },
+          "exclusive": {
+            "totalCalls": 0,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          },
+          "shared": {
+            "totalCalls": 1,
+            "sleepCount": 0,
+            "sleepTimeSum": "0 nanosec",
+            "maxSleepTime": "0 nanosec"
+          }
+        }
+      ],
+      "waitEventStat": [
+        {
+          "name": "DataFileRead",
+          "count": 4,
+          "timeSum": "36155 nanosec",
+          "maxTime": "11886 nanosec"
+        }
+      ]
     },
-    "executionEvents": [],
-    "executionTime": "191273 nanosec"
-  }
-]
+    {
+      "parsingTime": "33526 nanosec",
+      "planningTime": "39359 nanosec",
+      "executionStart": "2025:07:02T13:20:52.895",
+      "explain": {
+        "Query Text": "select stop_session_trace();",
+        "Plan": {
+          "Node Type": "Result",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 0,
+          "Total Cost": 0.01,
+          "Plan Rows": 1,
+          "Plan Width": 4,
+          "Output": [
+            "stop_session_trace()"
+          ]
+        },
+        "Settings": {}
+      },
+      "executionEvents": [],
+      "executionTime": "161173 nanosec"
+    }
+  ]
+}

@@ -2,45 +2,49 @@
 #define LIST_H
 #include "postgres.h"
 
-typedef int (*CompareFunction)(const void*, const void*);
+typedef int (*CompareFunction) (const void *, const void *);
 
 typedef struct ListItem ListItem;
 
-struct ListItem {
-    void* value;
-    ListItem* next;
-    ListItem* prev;
+struct ListItem
+{
+	void	   *value;
+	ListItem   *next;
+	ListItem   *prev;
 };
 
-typedef struct 
+typedef struct
 {
-    ListItem* head;
-    ListItem* tail;
-    size_t ListSize;
+	ListItem   *head;
+	ListItem   *tail;
+	size_t		ListSize;
 
-    MemoryContext memoryContext;
-    CompareFunction comparator;
+	MemoryContext memoryContext;
+	CompareFunction comparator;
 } UprobeList;
 
-extern void ListInit(UprobeList** list, CompareFunction comparator, MemoryContext memoryContext);
-extern void ListAdd(UprobeList* list, void* value);
-extern void* ListPop(UprobeList* list, void* value);
+extern void ListInit(UprobeList **list, CompareFunction comparator, MemoryContext memoryContext);
+extern void ListAdd(UprobeList *list, void *value);
+extern void *ListPop(UprobeList *list, void *value);
 
-extern void* ListPopLast(UprobeList* list);
+extern void *ListFind(UprobeList *list, void *value);
 
-extern void* ListPopFirst(UprobeList* list);
+extern void *ListPopLast(UprobeList *list);
 
-extern size_t ListSize(UprobeList* list);
-extern bool ListContains(UprobeList* list, void* value);
+extern void *ListPopFirst(UprobeList *list);
 
-extern void ListMakeEmpty(UprobeList* list);
-extern void ListFree(UprobeList* list);
+extern size_t ListSize(UprobeList *list);
+extern bool ListContains(UprobeList *list, void *value);
+
+extern void ListMakeEmpty(UprobeList *list);
+extern void ListFree(UprobeList *list);
 
 #define LIST_FOREACH(list, iterator)                                                                    \
-    for(ListItem* iterator = (list)->head; ((void *) iterator) != NULL; (iterator) = (iterator)->next)  \
+	for(ListItem *iterator = (list) ? (list)->head : NULL; ((void *) iterator) != NULL; (iterator) = (iterator)->next)  \
 
 #define LIST_FOREACH_REVERSE(list, iterator)                                                            \
-    for(ListItem* iterator = (list)->tail; ((void *) iterator) != NULL; (iterator) = (iterator)->prev)  \
+	for(ListItem *iterator = (list) ? (list)->tail : NULL; ((void *) iterator) != NULL; (iterator) = (iterator)->prev)  \
 
-#define LIST_LAST(list) list ? list->tail->value : NULL
-#endif
+#define LIST_LAST(list) (list) ? ((list)->tail ? (list)->tail->value : NULL) : NULL
+
+#endif							/* LIST_H */
