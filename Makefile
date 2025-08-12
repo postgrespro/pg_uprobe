@@ -34,7 +34,7 @@ PG_CPPFLAGS += -I./src/include
 PGFILEDESC = "pg_uprobe - allows measuring postgres functions execution time"
 
 EXTENSION = pg_uprobe
-DATA = pg_uprobe--1.0.sql
+DATA = pg_uprobe--0.3.sql
 
 REGRESS = pg_uprobe
 
