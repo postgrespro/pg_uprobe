@@ -10,9 +10,11 @@
     - [Build](#build)
     - [Configuration](#configuration)
     - [Creating the Extension](#creating-the-extension)
+  - [Tests] (#tests)
   - [Settings](#settings)
   - [Usage](#usage)
   - [Usage Examples](#usage-examples)
+  - [Code branching model](#code-branching-model)
 
 # pg_uprobe
 A PostgreSQL extension designed for tracing and analyzing queries executed within a session. This extension allows to capture and log information about running queries inside session. The collected information can retrieve heavy operations and most consumed resources  during the execution of specific SQL queries.
@@ -62,12 +64,17 @@ Supported PostgreSQL versions:
 
 Supported architectures:
 
-- x86
-- (We are working on supporting more architectures)
+|Informal name|Name in RPM and Linux kernel|Name in Debian and Astra|Features of hardware platform support|
+|------------|------------|------------|------------|
+|Intel compatible 64-bit|x86_64|amd64||
+|ARM 64-bit|aarch64|arm64|| Not tested, but Frida library supports this architecture
+
+(We are working on supporting more architectures)
 
 Supported operating systems:
 
 - Linux
+- FreeBSD
 
 ### Session Tracing
 
@@ -113,8 +120,7 @@ Requirements:
 
 The installation process involves the following steps:
 
-- Download Frida sources
-- Build the Frida library
+- Download Frida library
 - Build the extension itself
 
 ### Build
@@ -149,6 +155,14 @@ postgres=# CREATE EXTENSION pg_uprobe SCHEMA uprobe;
 ```
 We recommend installation in a dedicated schema. All objects will be created in the schema specified by the `SCHEMA` clause. If you do not want to specify the schema qualifier when using the extension, consider modifying the `search_path` parameter.
 
+## Tests
+The tests are written in Python using the testgres framework. To run the tests, you need to install the testgres package for Python and set the PG_CONFIG environment variable to the path to the pg_config executable of your PostgreSQL installation.
+Running tests:
+
+```shell
+make PG_CONFIG=/opt/pgpro/ent-15/bin/pg_config python_tests
+```
+
 ## Settings
 
 - **pg_uprobe.data_dir** - Path to the directory where the session trace results file and function profiling results files are created. Default: `$PGDATA/pg_uprobe`
@@ -171,6 +185,9 @@ Simple example of [session tracing](doc/example_trace_session.md)
 
 Simple example of [profiling PostgreSQL functions](doc/example_profile_func.md)
 
+## Code branching model
+
+**GitFlow** is used as the main code branching model in the git repository.
 
 ==============================<<<RU>>>==============================
 
@@ -221,11 +238,17 @@ Simple example of [profiling PostgreSQL functions](doc/example_profile_func.md)
 - [Postgres Pro Enterprise 15/16/17](https://postgrespro.ru/products/postgrespro/enterprise)
 
 Поддерживаемые архитектуры: 
-- x86
-- (Мы работаем над поддержкой большего количества архитектур)
+
+|Неформальное название|Название в RPM и Linux kernel|Название в Debian и Astra|Особенности поддержки аппаратных платформ|
+|------------|------------|------------|------------|
+|Интел-совместимые 64-бит|x86_64|amd64||
+|ARM 64-битные|aarch64|arm64|| Не тестировалось, но библиотека Frida поддерживает данную архитектуру
+
+(Мы работаем над поддержкой большего количества архитектур)
 
 Поддерживаемые операционные системы:
 - Linux
+- FreeBSD
 
 ### Трассирование сеансов
 При трассировании сеансов время выполнения запросов может увеличиться. В наших измерениях скорость выполнения падает на ~5%. Поэтому не стоит оставлять трассирование сеансов на длительное время. Этот инструмент предназначен, в первую очередь, для исследования проблемы, а не её обнаружения.
@@ -268,8 +291,7 @@ nm -D --demangle /opt/pgpro/ent-15/bin/postgres | awk '{ print $NF }'
 - python
 
 В процессе установки будут выполнены следующие шаги:
-- Скачиваются исходники Frida
-- Собирается библиотека Frida
+- Скачиваются библиотека Frida
 - Собирается само расширение
 
 ### Сборка
@@ -304,6 +326,14 @@ postgres=# CREATE EXTENSION pg_uprobe SCHEMA uprobe;
 ```
 Все объекты будут созданы в схеме, определенной предложением SCHEMA. Рекомендуется установка в выделенную схему где расширение создаст свои собственные функции. Если вы не хотите указывать квалификатор схемы при использовании расширения, рассмотрите возможность изменения параметра search_path.
 
+## Способы тестирования
+Тесты написаны на языке Python с использованием фреймворка testgres. Для запуска тестов необходимо установить пакет testgres для Python и установить переменную окружения PG_CONFIG в путь до исполняемого файла pg_config вашего установленного PostgreSQL.
+Запуск тестов:
+
+```shell
+make PG_CONFIG=/opt/pgpro/ent-15/bin/pg_config python_tests
+```
+
 ## Настройки
 
 - **pg_uprobe.data_dir** - Путь к каталогу, в котором будет создаваться файл с результатами трассирования сеанса и файлы с результатами профилирования функций. По умолчанию: `$PGDATA/pg_uprobe`
@@ -324,3 +354,7 @@ postgres=# CREATE EXTENSION pg_uprobe SCHEMA uprobe;
 Простой пример использования [трассирования сеанса](doc/example_trace_session.md)
 
 Простой пример использования [профилирования функций PostgreSQL](doc/example_profile_func.md)
+
+## Модель ветвления кода
+
+В качестве основной модели ветвления кода в git-репозитории используется **gitFlow**
