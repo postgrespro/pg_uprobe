@@ -73,7 +73,7 @@ Supported architectures:
 
 Supported operating systems:
 
-- Linux
+- Linux. Correct operation is guaranteed on the same versions of Linux distributions that are supported by current versions of PostgresPro.
 - FreeBSD
 
 ### Session Tracing
@@ -247,7 +247,7 @@ Simple example of [profiling PostgreSQL functions](doc/example_profile_func.md)
 (Мы работаем над поддержкой большего количества архитектур)
 
 Поддерживаемые операционные системы:
-- Linux
+- Linux. Корректная работа гарантируется на тех же версиях дистрибутивов Linix, которые поддерживаются актуальными версиями PostgresPro.
 - FreeBSD
 
 ### Трассирование сеансов
