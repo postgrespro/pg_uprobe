@@ -6,10 +6,6 @@
 #include "utils/jsonb.h"
 #include "utils/guc.h"
 #include "commands/explain.h"
-#if PG_MAJORVERSION_NUM >= 18
-#include "commands/explain_state.h"
-#include "commands/explain_format.h"
-#endif
 #include "storage/ipc.h"
 #include "storage/proc.h"
 
@@ -33,13 +29,12 @@ static UprobeList *uprobesList = NULL;
 
 static MemoryContext traceMemoryContext = NULL;
 
+/* We need it in case that ListAdd fails and we need to delete this uprobe */
 static volatile Uprobe *lastSetUprobe = NULL;
 
-/* we need it in case that ListAdd fails and we need to delete this uprobe */
-
 static ExecutorRun_hook_type prev_ExecutorRun_hook = NULL;
-
 static ExecutorStart_hook_type prev_ExecutorStart_hook = NULL;
+static ExecutorFinish_hook_type prev_ExecutorFinish_hook = NULL;
 
 bool		isExecuteTime = false;
 
@@ -68,6 +63,7 @@ static void TraceSessionExecutorRun(QueryDesc *queryDesc,
 									bool execute_once);
 #endif
 static void TraceSessionExecutorStart(QueryDesc *queryDesc, int eflags);
+static void TraceSessionExecutorFinish(QueryDesc *queryDesc);
 static char *ProcessDescBeforeExec(QueryDesc *queryDesc);
 
 static UprobeList *MakeNodesPlanStringsText(char *startPlanExplain, char *endPlanExplain);
@@ -291,6 +287,8 @@ SessionTraceStart(void)
 		ExecutorRun_hook = TraceSessionExecutorRun;
 		prev_ExecutorStart_hook = ExecutorStart_hook;
 		ExecutorStart_hook = TraceSessionExecutorStart;
+		prev_ExecutorFinish_hook = ExecutorFinish_hook;
+		ExecutorFinish_hook = TraceSessionExecutorFinish;
 	}
 	PG_CATCH();
 	{
@@ -545,6 +543,62 @@ TraceSessionExecutorStart(QueryDesc *queryDesc, int eflags)
 
 	ExecuteNodesDeleteRegister(queryDesc);
 	ExecuteNodesStatePop();
+}
+
+
+static void
+TraceSessionExecutorFinish(QueryDesc *queryDesc)
+{
+	char	   *planCopy;
+	struct timespec time;
+	uint64		executionStarted;
+
+	/*No Executor nodes will be called, so no need for additional set up*/
+	if (queryDesc->estate->es_auxmodifytables == NULL)
+	{
+		if (prev_ExecutorFinish_hook)
+			(*prev_ExecutorFinish_hook) (queryDesc);
+		else
+			standard_ExecutorFinish(queryDesc);
+		return;
+	}
+
+	if (writeMode == JSON_WRITE_MODE && !isFirstNodeCall)
+	{
+		TracePrintf(",\n");
+	}
+
+	planCopy = BeforeExecution(queryDesc);
+
+	clock_gettime(CLOCKTYPE, &time);
+	executionStarted = time.tv_sec * 1000000000L + time.tv_nsec;
+
+	ExecutorRunNestLevel++;
+
+	PG_TRY();
+	{
+		if (prev_ExecutorFinish_hook)
+			(*prev_ExecutorFinish_hook) (queryDesc);
+		else
+			standard_ExecutorFinish(queryDesc);
+	}
+	PG_FINALLY();
+	{
+		uint64		timeDiff;
+
+		ExecutorRunNestLevel--;
+
+		clock_gettime(CLOCKTYPE, &time);
+		timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - executionStarted;
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE. Execution finished for %lu nanosec\n", timeDiff);
+		else
+			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
+
+		AfterExecution(queryDesc, planCopy);
+		isFirstNodeCall = false;
+	}
+	PG_END_TRY();
 }
 
 

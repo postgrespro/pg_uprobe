@@ -496,9 +496,25 @@ def trace_session_plpgsql_functions_exceptions(node: PostgresNode):
         start_session_trace(conn)
 
         try:
-            node.execute("SELECT process_complete_order(1, ARRAY[5,8], ARRAY[10, 5])")
+            conn.execute("SELECT process_complete_order(1, ARRAY[5,8], ARRAY[10, 5])")
         except:
             pass
+
+        stop_session_trace(conn)
+
+        result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
+        validate_each_session_trace_result(json.loads(result), conn.pid)
+
+
+def trace_session_correct_executor_finish(node: PostgresNode):
+    with node.connect("postgres", autocommit=True) as conn:
+        start_session_trace(conn)
+
+        node.execute("create table mlparted (a int, b int)")
+
+        node.execute("with ins (a, b, c) as \
+                        (insert into mlparted (b, a) select s.a, 1 from generate_series(2, 39) s(a) returning tableoid::regclass, *) \
+                        select a, b, min(c), max(c) from ins group by a, b order by 1;")
 
         stop_session_trace(conn)
 
@@ -521,3 +537,4 @@ def run_tests(node: PostgresNode):
     test_wrapper(node, trace_session_pid)
     test_wrapper(node, trace_session_plpgsql_functions)
     test_wrapper(node, trace_session_plpgsql_functions_exceptions)
+    test_wrapper(node, trace_session_correct_executor_finish)

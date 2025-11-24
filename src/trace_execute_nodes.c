@@ -188,7 +188,6 @@ TraceExecProcNodeHook(PlanState *node)
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	startTime = time.tv_sec * 1000000000L + time.tv_nsec;
-	nodeData->traceData.totalCalls++;
 
 	/* call real node */
 	result = nodeData->traceData.execProcNode(node);
@@ -197,6 +196,7 @@ TraceExecProcNodeHook(PlanState *node)
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - startTime;
+	nodeData->traceData.totalCalls++;
 
 	if (timeDiff > nodeData->traceData.maxTime)
 		nodeData->traceData.maxTime = timeDiff;
@@ -315,7 +315,6 @@ TraceExprNodeHook(struct ExprState *expression, struct ExprContext *econtext, bo
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	startTime = time.tv_sec * 1000000000L + time.tv_nsec;
-	exprData->traceData.totalCalls++;
 
 	/* call real node */
 	result = exprData->traceData.evalfunc(expression, econtext, isNull);
@@ -324,6 +323,7 @@ TraceExprNodeHook(struct ExprState *expression, struct ExprContext *econtext, bo
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - startTime;
+	exprData->traceData.totalCalls++;
 
 	if (timeDiff > exprData->traceData.maxTime)
 		exprData->traceData.maxTime = timeDiff;
