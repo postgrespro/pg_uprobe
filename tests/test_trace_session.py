@@ -477,13 +477,13 @@ def trace_session_plpgsql_functions(node: PostgresNode):
     with node.connect("postgres", autocommit=True) as conn:
         start_session_trace(conn)
 
-        assert node.execute("select calculate_order_total(2)") == [(Decimal('80000.00'),)]
-        node.execute("select update_order_status(2, 'SHIPPED')")
-        node.execute("select add_product_to_order(1, 2, 100)")
-        assert node.execute("select * from get_user_orders(1)") == [(1, Decimal('4050000.00'), 'NEW', 2,)]
-        node.execute("select create_user('aboba', 'boba', 'aboba_boba@example.ru', '+79132281337')")
-        assert node.execute("select * from get_low_stock_products(10000)") == [(2,"Samsung Galaxy S10",50,40000.00),(1,"iPhone X",100,50000.00), (3,"Xiaomi Redmi Note 8 Pro",200,25000.00)]
-        assert node.execute("SELECT process_complete_order(1, ARRAY[2,3], ARRAY[10, 5])") == [(4,)]
+        assert conn.execute("select calculate_order_total(2)") == [(Decimal('80000.00'),)]
+        conn.execute("select update_order_status(2, 'SHIPPED')")
+        conn.execute("select add_product_to_order(1, 2, 100)")
+        assert conn.execute("select * from get_user_orders(1)") == [(1, Decimal('4050000.00'), 'NEW', 2,)]
+        conn.execute("select create_user('aboba', 'boba', 'aboba_boba@example.ru', '+79132281337')")
+        assert conn.execute("select * from get_low_stock_products(10000)") == [(2,"Samsung Galaxy S10",50,40000.00),(1,"iPhone X",100,50000.00), (3,"Xiaomi Redmi Note 8 Pro",200,25000.00)]
+        assert conn.execute("SELECT process_complete_order(1, ARRAY[2,3], ARRAY[10, 5])") == [(4,)]
 
         stop_session_trace(conn)
 
@@ -510,9 +510,9 @@ def trace_session_correct_executor_finish(node: PostgresNode):
     with node.connect("postgres", autocommit=True) as conn:
         start_session_trace(conn)
 
-        node.execute("create table mlparted (a int, b int)")
+        conn.execute("create table mlparted (a int, b int)")
 
-        node.execute("with ins (a, b, c) as \
+        conn.execute("with ins (a, b, c) as \
                         (insert into mlparted (b, a) select s.a, 1 from generate_series(2, 39) s(a) returning tableoid::regclass, *) \
                         select a, b, min(c), max(c) from ins group by a, b order by 1;")
 
