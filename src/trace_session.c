@@ -8,7 +8,7 @@
 #include "commands/explain.h"
 #include "storage/ipc.h"
 #include "storage/proc.h"
-
+#include "tcop/utility.h"
 #include "trace_parsing.h"
 #include "uprobe_internal.h"
 #include "trace_lock_on_buffers.h"
@@ -35,6 +35,7 @@ static volatile Uprobe *lastSetUprobe = NULL;
 static ExecutorRun_hook_type prev_ExecutorRun_hook = NULL;
 static ExecutorStart_hook_type prev_ExecutorStart_hook = NULL;
 static ExecutorFinish_hook_type prev_ExecutorFinish_hook = NULL;
+static ProcessUtility_hook_type prev_ProcessUtility_hook = NULL;
 
 bool		isExecuteTime = false;
 
@@ -62,6 +63,14 @@ static void TraceSessionExecutorRun(QueryDesc *queryDesc,
 									uint64 count,
 									bool execute_once);
 #endif
+static void TraceSessionExecutorProcessUtility(PlannedStmt *pstmt,
+											   const char *queryString,
+											   bool readOnlyTree,
+											   ProcessUtilityContext context,
+											   ParamListInfo params,
+											   QueryEnvironment *queryEnv,
+											   DestReceiver *dest,
+											   QueryCompletion *qc);
 static void TraceSessionExecutorStart(QueryDesc *queryDesc, int eflags);
 static void TraceSessionExecutorFinish(QueryDesc *queryDesc);
 static char *ProcessDescBeforeExec(QueryDesc *queryDesc);
@@ -289,6 +298,8 @@ SessionTraceStart(void)
 		ExecutorStart_hook = TraceSessionExecutorStart;
 		prev_ExecutorFinish_hook = ExecutorFinish_hook;
 		ExecutorFinish_hook = TraceSessionExecutorFinish;
+		prev_ProcessUtility_hook = ProcessUtility_hook;
+		ProcessUtility_hook = TraceSessionExecutorProcessUtility;
 	}
 	PG_CATCH();
 	{
@@ -464,6 +475,27 @@ ProcessDescBeforeExec(QueryDesc *queryDesc)
 	return planCopy;
 }
 
+static void
+CallOriginalExecutorFinish(PlannedStmt *pstmt,
+						   const char *queryString,
+						   bool readOnlyTree,
+						   ProcessUtilityContext context,
+						   ParamListInfo params,
+						   QueryEnvironment *queryEnv,
+						   DestReceiver *dest,
+						   QueryCompletion *qc)
+{
+	if (prev_ProcessUtility_hook)
+			(*prev_ProcessUtility_hook) (pstmt, queryString, readOnlyTree,
+										 context, params, queryEnv,
+										 dest, qc);
+		else
+			standard_ProcessUtility(pstmt, queryString, readOnlyTree,
+									context, params, queryEnv,
+									dest, qc);
+}
+
+
 #if PG_MAJORVERSION_NUM >= 18
 static void
 TraceSessionExecutorRun(QueryDesc *queryDesc, ScanDirection direction, uint64 count)
@@ -581,6 +613,82 @@ TraceSessionExecutorFinish(QueryDesc *queryDesc)
 			(*prev_ExecutorFinish_hook) (queryDesc);
 		else
 			standard_ExecutorFinish(queryDesc);
+	}
+	PG_FINALLY();
+	{
+		uint64		timeDiff;
+
+		ExecutorRunNestLevel--;
+
+		clock_gettime(CLOCKTYPE, &time);
+		timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - executionStarted;
+		if (writeMode == TEXT_WRITE_MODE)
+			TracePrintf("TRACE. Execution finished for %lu nanosec\n", timeDiff);
+		else
+			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
+
+		AfterExecution(queryDesc, planCopy);
+		isFirstNodeCall = false;
+	}
+	PG_END_TRY();
+}
+
+static void
+TraceSessionExecutorProcessUtility(PlannedStmt *pstmt,
+								   const char *queryString,
+								   bool readOnlyTree,
+								   ProcessUtilityContext context,
+								   ParamListInfo params,
+								   QueryEnvironment *queryEnv,
+								   DestReceiver *dest,
+								   QueryCompletion *qc)
+{
+	char	   *planCopy;
+	struct timespec time;
+	uint64		executionStarted;
+	FetchStmt	*fetch;
+	Portal		portal;
+	QueryDesc	*queryDesc;
+
+	if (nodeTag(pstmt->utilityStmt) != T_FetchStmt)
+	{
+		CallOriginalExecutorFinish(pstmt, queryString, readOnlyTree,
+								   context, params, queryEnv,
+								   dest, qc);
+
+		return;
+	}
+
+	fetch = (FetchStmt*) pstmt->utilityStmt;
+	portal = GetPortalByName(fetch->portalname);
+
+	if (!PortalIsValid(portal))
+	{
+		CallOriginalExecutorFinish(pstmt, queryString, readOnlyTree,
+								   context, params, queryEnv,
+								   dest, qc);
+		return;
+	}
+
+	queryDesc = portal->queryDesc;
+
+	if (writeMode == JSON_WRITE_MODE && !isFirstNodeCall)
+	{
+		TracePrintf(",\n");
+	}
+
+	planCopy = BeforeExecution(queryDesc);
+
+	clock_gettime(CLOCKTYPE, &time);
+	executionStarted = time.tv_sec * 1000000000L + time.tv_nsec;
+
+	ExecutorRunNestLevel++;
+
+	PG_TRY();
+	{
+		CallOriginalExecutorFinish(pstmt, queryString, readOnlyTree,
+								   context, params, queryEnv,
+								   dest, qc);
 	}
 	PG_FINALLY();
 	{

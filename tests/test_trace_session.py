@@ -516,11 +516,57 @@ def trace_session_correct_executor_finish(node: PostgresNode):
                         (insert into mlparted (b, a) select s.a, 1 from generate_series(2, 39) s(a) returning tableoid::regclass, *) \
                         select a, b, min(c), max(c) from ins group by a, b order by 1;")
 
+        conn.execute("drop table mlparted")
+
         stop_session_trace(conn)
 
         result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
         validate_each_session_trace_result(json.loads(result), conn.pid)
 
+def trace_session_fetch(node: PostgresNode):
+    with node.connect("postgres", autocommit=True) as conn:
+        start_session_trace(conn)
+
+        conn.execute("CREATE TABLE INT8_TBL(q1 int8, q2 int8)")
+
+        conn.execute("INSERT INTO INT8_TBL VALUES \
+                        ('  123   ','  456'), \
+                        ('123   ','4567890123456789'), \
+                        ('4567890123456789','123'), \
+                        (+4567890123456789,'4567890123456789'), \
+                        ('+4567890123456789','-4567890123456789')")
+        conn.execute("begin")
+        conn.execute("create function nochange(int) returns int \
+                      as 'select $1 limit 1' language sql stable")
+        conn.execute("declare c cursor for select * from int8_tbl limit nochange(3)")
+        conn.execute("fetch all from c")
+        conn.execute("move backward all in c")
+        conn.execute("fetch all from c")
+        conn.execute("rollback")
+        stop_session_trace(conn)
+
+        result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
+        validate_each_session_trace_result(json.loads(result), conn.pid)
+
+def trace_session_correct_with_jit(node: PostgresNode):
+    with node.connect("postgres", autocommit=True) as conn:
+        conn.execute("set jit to on")
+        conn.execute("set jit_above_cost to 0.0")
+        conn.execute("set jit_inline_above_cost to 0.0")
+        conn.execute("set jit_optimize_above_cost to 0.0")
+        start_session_trace(conn)
+
+        conn.execute("create table mlparted (a int, b int)")
+        conn.execute("with ins (a, b, c) as \
+                        (insert into mlparted (b, a) select s.a, 1 from generate_series(2, 39) s(a) returning tableoid::regclass, *) \
+                        select a, b, min(c), max(c) from ins group by a, b order by 1;")
+
+        conn.execute("drop table mlparted")
+
+        stop_session_trace(conn)
+
+        result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
+        validate_each_session_trace_result(json.loads(result), conn.pid)
 
 def run_tests(node: PostgresNode):
     test_wrapper(node, trace_current_session_trace)
@@ -538,3 +584,5 @@ def run_tests(node: PostgresNode):
     test_wrapper(node, trace_session_plpgsql_functions)
     test_wrapper(node, trace_session_plpgsql_functions_exceptions)
     test_wrapper(node, trace_session_correct_executor_finish)
+    test_wrapper(node, trace_session_fetch)
+    test_wrapper(node, trace_session_correct_with_jit)

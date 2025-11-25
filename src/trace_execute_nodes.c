@@ -266,10 +266,10 @@ ExecInitExprRetFunc(void *data, ExprState *resNode)
 	exprData->traceData.maxTime = 0;
 	exprData->traceData.totalCalls = 0;
 	exprData->traceData.totalTimeSum = 0;
-	exprData->traceData.evalfunc = resNode->evalfunc_private;
+	exprData->traceData.evalfunc = resNode->evalfunc;
 	exprData->traceData.tag = resNode->expr->type;
 	ListAdd(currentState->uprobeExprData, exprData);
-	resNode->evalfunc_private = TraceExprNodeHook;
+	resNode->evalfunc = TraceExprNodeHook;
 }
 
 
@@ -320,6 +320,12 @@ TraceExprNodeHook(struct ExprState *expression, struct ExprContext *econtext, bo
 	result = exprData->traceData.evalfunc(expression, econtext, isNull);
 	if (!currentState)
 		return result;			/* This case is for ending session trace */
+
+	if (expression->evalfunc != TraceExprNodeHook)
+	{
+		exprData->traceData.evalfunc = expression->evalfunc;
+		expression->evalfunc = TraceExprNodeHook;
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	timeDiff = time.tv_sec * 1000000000L + time.tv_nsec - startTime;
