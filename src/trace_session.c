@@ -5,6 +5,10 @@
 #include "utils/portal.h"
 #include "utils/jsonb.h"
 #include "utils/guc.h"
+#if PG_MAJORVERSION_NUM >= 18
+#include "commands/explain_state.h"
+#include "commands/explain_format.h"
+#endif
 #include "commands/explain.h"
 #include "storage/ipc.h"
 #include "storage/proc.h"
