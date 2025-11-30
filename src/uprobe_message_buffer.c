@@ -21,7 +21,7 @@ typedef struct MessageBuffer
 } MessageBuffer;
 
 
-MessageBuffer *messageBuffer;
+static MessageBuffer *messageBuffer;
 
 
 static bool WaitUntillMessageBufferHasSpace(void);

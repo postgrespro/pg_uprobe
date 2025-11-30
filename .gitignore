@@ -4,5 +4,7 @@ third_party
 *.bc
 *.o
 *.so
+*.gcda
+*.gcno
 node_names.h
 tests/__pycache__
