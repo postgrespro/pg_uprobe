@@ -666,7 +666,7 @@ TraceSessionExecutorProcessUtility(PlannedStmt *pstmt,
 	fetch = (FetchStmt*) pstmt->utilityStmt;
 	portal = GetPortalByName(fetch->portalname);
 
-	if (!PortalIsValid(portal))
+	if (!PortalIsValid(portal) || portal->queryDesc == NULL)
 	{
 		CallOriginalExecutorFinish(pstmt, queryString, readOnlyTree,
 								   context, params, queryEnv,

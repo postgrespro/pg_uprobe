@@ -568,6 +568,36 @@ def trace_session_correct_with_jit(node: PostgresNode):
         result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
         validate_each_session_trace_result(json.loads(result), conn.pid)
 
+def trace_session_correct_fetch_zero_desc(node: PostgresNode):
+    with node.connect("postgres", autocommit=True) as conn:
+        start_session_trace(conn)
+
+        conn.execute("CREATE FUNCTION create_temp_tab() RETURNS text \
+                        LANGUAGE plpgsql AS $$ \
+                        BEGIN \
+                        CREATE TEMP TABLE new_table (f1 float); \
+                        INSERT INTO new_table SELECT invert(0.0); \
+                        RETURN 'foo'; \
+                    END $$;")
+        conn.execute("BEGIN")
+        conn.execute("DECLARE ctt CURSOR FOR SELECT create_temp_tab()")
+        conn.execute("SAVEPOINT s1")
+        try:
+            conn.execute("FETCH ctt")
+        except:
+            pass
+        conn.execute("ROLLBACK TO s1")
+        try:
+            conn.execute("FETCH ctt")
+        except:
+            pass
+        conn.execute("COMMIT")
+
+        stop_session_trace(conn)
+
+        result = node_read_file_one_line(node, f"/pg_uprobe/trace_file.txt_{conn.pid}")
+        validate_each_session_trace_result(json.loads(result), conn.pid)
+
 def run_tests(node: PostgresNode):
     test_wrapper(node, trace_current_session_trace)
     test_wrapper(node, trace_current_session_trace_non_sleep_buffer_locks)
@@ -586,3 +616,4 @@ def run_tests(node: PostgresNode):
     test_wrapper(node, trace_session_correct_executor_finish)
     test_wrapper(node, trace_session_fetch)
     test_wrapper(node, trace_session_correct_with_jit)
+    test_wrapper(node, trace_session_correct_fetch_zero_desc)
