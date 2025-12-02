@@ -591,7 +591,7 @@ def trace_session_correct_fetch_zero_desc(node: PostgresNode):
             conn.execute("FETCH ctt")
         except:
             pass
-        conn.execute("COMMIT")
+        conn.execute("ROLLBACK")
 
         stop_session_trace(conn)
 
