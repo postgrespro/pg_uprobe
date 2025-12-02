@@ -362,6 +362,8 @@ SessionTraceStop(bool closeFile)
 	traceMemoryContext = NULL;
 	ExecutorRun_hook = prev_ExecutorRun_hook;
 	ExecutorStart_hook = prev_ExecutorStart_hook;
+	ExecutorFinish_hook = prev_ExecutorFinish_hook;
+	ProcessUtility_hook = prev_ProcessUtility_hook;
 }
 
 
