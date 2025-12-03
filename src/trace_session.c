@@ -41,14 +41,14 @@ static ExecutorStart_hook_type prev_ExecutorStart_hook = NULL;
 static ExecutorFinish_hook_type prev_ExecutorFinish_hook = NULL;
 static ProcessUtility_hook_type prev_ProcessUtility_hook = NULL;
 
-bool		isExecuteTime = false;
+bool isExecuteTime = false;
 
-int			ExecutorRunNestLevel = 0;
+static int ExecutorRunNestLevel = 0;
 
 /* GUC parametrs */
-int			writeMode = JSON_WRITE_MODE;
-bool		traceLWLocksForEachNode = true;
-bool		writeOnlySleepLWLocksStat = true;
+int writeMode = JSON_WRITE_MODE;
+static bool traceLWLocksForEachNode = true;
+static bool writeOnlySleepLWLocksStat = true;
 
 
 static const struct config_enum_entry writeModeOptions[] = {
