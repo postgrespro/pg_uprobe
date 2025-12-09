@@ -38,7 +38,6 @@ static char *waitFuncs[] = {
 	"write",
 	"pwritev",
 	"fdatasync",
-	"system",
 	"pg_usleep",
 #if defined(HAVE_SYNC_FILE_RANGE)
 	"sync_file_range",
