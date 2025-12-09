@@ -17,7 +17,7 @@ typedef struct UprobeFactoryEntry
 } UprobeFactoryEntry;
 
 
-UprobeFactoryEntry staticEntries[] = {
+static UprobeFactoryEntry staticEntries[] = {
 	{
 		.interfaceInit = UprobeAttachTimeInit,
 		.storageInit = UprobeStorageTimeInit,
