@@ -91,7 +91,7 @@ static void SetUprobes2Ptr(UprobeAttachInterface **uprobes, size_t size);
 static void SetUprobes1Ptr(UprobeAttachInterface *uprobes, size_t size);
 
 static char *BeforeExecution(QueryDesc *queryDesc);
-static void AfterExecution(QueryDesc *queryDesc, char *planString);
+static bool AfterExecution(QueryDesc *queryDesc, char *planString);
 
 
 static void
@@ -172,8 +172,8 @@ BeforeExecution(QueryDesc *queryDesc)
 	return planCopy;
 }
 
-
-static void
+/*returns true if it's the and of tracing*/
+static bool
 AfterExecution(QueryDesc *queryDesc, char *planString)
 {
 	StringInfoData str;
@@ -192,7 +192,7 @@ AfterExecution(QueryDesc *queryDesc, char *planString)
 		}
 		if (ExecutorRunNestLevel == 0)
 			CloseTraceSessionFile();
-		return;
+		return true;
 	}
 
 	ExecutorTraceDumpAndClearStat(queryDesc, planString);
@@ -235,6 +235,8 @@ AfterExecution(QueryDesc *queryDesc, char *planString)
 		TracePrintf("\n\n---------query end------------\n\n");
 	else
 		TracePrintf("}");
+	
+	return false;
 }
 
 
@@ -402,6 +404,7 @@ SessionTraceInit(void)
 							 NULL,
 							 NULL);
 	TraceFileDeclareGucVariables();
+	TraceWaitEventsRegisterGucVariables();
 }
 
 
@@ -553,8 +556,7 @@ TraceSessionExecutorRun(QueryDesc *queryDesc, ScanDirection direction, uint64 co
 		else
 			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
 
-		AfterExecution(queryDesc, planCopy);
-		isFirstNodeCall = false;
+		isFirstNodeCall = AfterExecution(queryDesc, planCopy);
 	}
 	PG_END_TRY();
 }
@@ -633,8 +635,7 @@ TraceSessionExecutorFinish(QueryDesc *queryDesc)
 		else
 			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
 
-		AfterExecution(queryDesc, planCopy);
-		isFirstNodeCall = false;
+		isFirstNodeCall = AfterExecution(queryDesc, planCopy);
 	}
 	PG_END_TRY();
 }
@@ -709,8 +710,7 @@ TraceSessionExecutorProcessUtility(PlannedStmt *pstmt,
 		else
 			TracePrintf("\n],\n\"executionTime\": \"%lu nanosec\"\n", timeDiff);
 
-		AfterExecution(queryDesc, planCopy);
-		isFirstNodeCall = false;
+		isFirstNodeCall = AfterExecution(queryDesc, planCopy);
 	}
 	PG_END_TRY();
 }

@@ -382,6 +382,7 @@ def trace_current_session_check_file_limit(node: PostgresNode):
         conn.execute("set pg_uprobe.write_only_sleep_lwlocks_stat to false")
 
         conn.execute("set pg_uprobe.trace_lwlocks_for_each_node to true")
+        conn.execute("set pg_uprobe.trace_file_limit to 16")
 
         start_session_trace(conn)
 
