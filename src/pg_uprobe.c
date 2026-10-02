@@ -243,10 +243,12 @@ SetUprobeForStatCollecting(void)
 	uprobe->targetSymbol = "ReadyForQuery";
 	uprobe->timedCallback = NULL;
 	res = UprobeInit(uprobe, &uprobeUnused);
-	if (res != SUCCESS)
-	{
+
+	if (res == BINARY_CHANGE)
+		return; /* Simply return warring was rised inside UprobeInit */
+	else if (res != SUCCESS)
 		elog(ERROR, "can't set uprobe for collecting stat over time on symbol ReadyForQuery");
-	}
+
 	clock_gettime(CLOCK_MONOTONIC, &time);
 	lastTimeDropStat = time.tv_sec;
 }
@@ -439,6 +441,9 @@ set_uprobe(PG_FUNCTION_ARGS)
 			break;
 		case CANNOT_FIND_SYMBOL:
 			elog(ERROR, "Can't find given function.");
+			break;
+		case BINARY_CHANGE:
+			elog(ERROR, "One of libraries or postgres finary it self is changed on file system.");
 			break;
 		default:
 			PG_RETURN_TEXT_P(funcName);

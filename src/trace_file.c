@@ -9,7 +9,7 @@ static char *traceFileName = NULL;
 char	   *dataDir = NULL;
 
 /*limit in megabytes */
-int			traceFileLimit = 16;
+int			traceFileLimit = 1024;
 size_t		currentSize = 0;
 FILE	   *traceFile = NULL;
 

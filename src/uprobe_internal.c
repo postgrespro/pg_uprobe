@@ -3,6 +3,7 @@
 
 #include "frida-gum.h"
 #include "uprobe_message_buffer.h"
+#include "check_bin_change.h"
 
 #include "uprobe_internal.h"
 
@@ -95,7 +96,6 @@ UprobeInit(UprobeAttachInterface *uprobeAttach, Uprobe **uprobe)
 	void	   *funcAddr;
 	MemoryContext old;
 
-
 	old = MemoryContextSwitchTo(UprobeMemoryContext);
 	result = (Uprobe *) palloc0(sizeof(Uprobe));
 	result->uprobeInterface = uprobeAttach;
@@ -106,6 +106,14 @@ UprobeInit(UprobeAttachInterface *uprobeAttach, Uprobe **uprobe)
 		UprobeDelete(result);
 		return INVALID_NUMBER_OF_ARGS;
 	}
+
+	if (binChange())
+	{
+		UprobeDelete(result);
+		elog(WARNING, "One of libraries or postgres finary it self is changed on file system. pg_uprobe won't work until restart");
+		return BINARY_CHANGE;
+	}
+	
 	funcAddr = gum_find_function(uprobeAttach->targetSymbol);
 	if (funcAddr == NULL)
 	{

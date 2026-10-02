@@ -27,7 +27,8 @@ OBJS = \
 	src/trace_wait_events.o \
 	src/json_to_jsonbvalue_parser.o \
 	src/lockmanager_trace.o \
-	src/trace_file.o
+	src/trace_file.o \
+	src/check_bin_change.o
 
 PG_CFLAGS += -I./src/include
 PG_CPPFLAGS += -I./src/include
