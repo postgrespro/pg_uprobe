@@ -108,7 +108,6 @@ Json schema: [trace_json_schema.json](./trace_json_schema.json)
     "executionTime": "282504 nanosec",             // Время затраченное на выполнение запроса
     "executorNodeStatInPlan": object,              // Вывод команды explain для запроса в json формате с статистикой выполнения каждого узла
     "exprNodeStat": array[object],                 // Статистика для вычисляемых выражений
-    "params": object,                              // Опциональное поле. Параметры для подготовленного запроса
     "locksInsidePortalRun": object,                // Опциональное поле. Статистика блокировок страниц буферного кэша во время выполнения запроса. Содержит объекты типа LWLockStat
     "locksOutsidePortalRun": object,               // Опциональное поле. Статистика блокировок страниц буферного кэша до выполнения запроса или после. Содержит объекты типа LWLockStat
     "waitEventStat": object                        // Опциональное поле. Статистика по событиям ожидания за время выполнения запроса

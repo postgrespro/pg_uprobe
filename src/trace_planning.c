@@ -15,7 +15,6 @@ typedef struct PlannerTrace
 	/* using 0 as invalid val */
 	uint64		planningTime;
 	HTAB	   *bufferLocksStat;
-	char	   *boundParamsLogString;
 	bool		isPlanCustom;
 } PlannerTrace;
 
@@ -33,7 +32,6 @@ static PlannerTrace plannerTrace =
 {
 	.startTime = 0,
 	.planningTime = 0,
-	.boundParamsLogString = NULL,
 	.bufferLocksStat = NULL,
 	.isPlanCustom = false
 };
@@ -103,27 +101,10 @@ GetCachedPlanInFunc(void *data, CachedPlanSource *plansource, ParamListInfo boun
 static void
 GetCachedPlanRetFunc(void *data)
 {
-	MemoryContext old;
-
-	old = MemoryContextSwitchTo(traceMemoryContext);
-
-	if (plannerTrace.boundParamsLogString)
-		pfree(plannerTrace.boundParamsLogString);
-
-	if (getCachedPlanTrace.boundParams)
-		plannerTrace.boundParamsLogString = BuildParamLogString(getCachedPlanTrace.boundParams, NULL, -1);
-	else
-		plannerTrace.boundParamsLogString = pstrdup("");
-
 	if (getCachedPlanTrace.plansource->num_custom_plans != getCachedPlanTrace.prevNumCustomPlans)
-	{
 		plannerTrace.isPlanCustom = true;
-	}
 	else if (getCachedPlanTrace.plansource->num_generic_plans != getCachedPlanTrace.prevNumGenericPlans)
-	{
 		plannerTrace.isPlanCustom = false;
-	}
-	MemoryContextSwitchTo(old);
 }
 
 
@@ -167,17 +148,10 @@ PlanningWriteData(void)
 
 	LockOnBuffersTraceWriteStatWithName(plannerTrace.bufferLocksStat, "LWLockPlanning");
 
-	if (plannerTrace.boundParamsLogString == NULL)
-	{
-		PlanningClearData();
-		return;
-	}
-
 	if (writeMode == TEXT_WRITE_MODE)
-		TracePrintf("TRACE GET_CACHED_PLAN. Custom plan was chosen for boundParams: %s", plannerTrace.boundParamsLogString);
+		TracePrintf("TRACE GET_CACHED_PLAN. %s plan was chosen", plannerTrace.isPlanCustom ? "custom" : "generic");
 	else
-		TracePrintf("    \"planType\": \"%s\",\n    \"params\": \"%s\",\n",
-					plannerTrace.isPlanCustom ? "custom" : "generic", plannerTrace.boundParamsLogString);
+		TracePrintf("    \"planType\": \"%s\",\n", plannerTrace.isPlanCustom ? "custom" : "generic");
 
 
 	PlanningClearData();
@@ -188,11 +162,6 @@ void
 PlanningClearData(void)
 {
 	hash_destroy(plannerTrace.bufferLocksStat);
-	if (plannerTrace.boundParamsLogString)
-	{
-		pfree(plannerTrace.boundParamsLogString);
-		plannerTrace.boundParamsLogString = NULL;
-	}
 	plannerTrace.bufferLocksStat = NULL;
 	plannerTrace.planningTime = 0;
 }

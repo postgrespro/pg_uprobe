@@ -2,6 +2,7 @@
 #include <time.h>
 #include "miscadmin.h"
 #include "utils/hsearch.h"
+#include "utils/guc.h"
 #include "utils/wait_event.h"
 
 #include "uprobe_attach_interface.h"
@@ -25,7 +26,9 @@ static WaitEventData *currentWaitEvent;
 static uint64 startWaitEventTime;
 
 static UprobeAttachInterface *attachedUprobes = NULL;
+static MemoryContext traceMemoryContext = NULL;
 
+static bool traceWaitEventsInCritSec = true;
 
 static char *waitFuncs[] = {
 	"pwrite",
@@ -94,12 +97,15 @@ static void
 WaitEventsDatStorageInit(void)
 {
 	HASHCTL		map_info;
-
 	map_info.keysize = sizeof(uint32);
 	map_info.entrysize = sizeof(WaitEventData);
 	map_info.hash = &WaitEventDataHash;
 	map_info.match = &WaitEventDataCmp;
-	waitEventsDataStorage = hash_create("map for trace wait events", 1024, &map_info, HASH_ELEM | HASH_FUNCTION | HASH_COMPARE);
+	map_info.hcxt = AllocSetContextCreate(traceMemoryContext,
+										  "wait events hash",
+										  ALLOCSET_DEFAULT_SIZES);
+	map_info.hcxt->allowInCritSection = true;
+	waitEventsDataStorage = hash_create("map for trace wait events", 1024, &map_info, HASH_ELEM | HASH_FUNCTION | HASH_COMPARE | HASH_CONTEXT);
 }
 
 
@@ -120,7 +126,7 @@ TraceWaitEventInFunc(void *data)
 	if (*my_wait_event_info == 0)
 		return;
 
-	if (CritSectionCount == 0)
+	if (traceWaitEventsInCritSec)
 	{
 		currentWaitEvent = hash_search(waitEventsDataStorage, my_wait_event_info, HASH_ENTER, &isFound);
 	}
@@ -173,7 +179,7 @@ SignalWaitEventStart(uint64 time)
 	if (*my_wait_event_info == 0)
 		return;
 
-	if (CritSectionCount == 0)
+	if (traceWaitEventsInCritSec)
 	{
 		currentWaitEvent = hash_search(waitEventsDataStorage, my_wait_event_info, HASH_ENTER, &isFound);
 	}
@@ -318,4 +324,20 @@ TraceWaitEventDumpStat(StringInfo out)
 	WaitEventsDatStorageInit();
 
 	return hasInfo;
+}
+
+
+void
+TraceWaitEventsRegisterGucVariables(void)
+{
+	DefineCustomBoolVariable("pg_uprobe.trace_wait_events_in_crit_section",
+							 "if set to true we will trace wait events in crit section. Adds memory allocation inside crit section.",
+							 NULL,
+							 &traceWaitEventsInCritSec,
+							 true,
+							 PGC_SUSET,
+							 0,
+							 NULL,
+							 NULL,
+							 NULL);
 }

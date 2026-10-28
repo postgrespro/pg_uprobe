@@ -19,4 +19,6 @@ extern void SignalWaitEventStart(uint64 time);
 
 extern void SignalWaitEventEnd(uint64 time);
 
+extern void TraceWaitEventsRegisterGucVariables(void);
+
 #endif							/* TRACE_WAIT_EVENTS_H */

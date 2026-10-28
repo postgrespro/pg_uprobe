@@ -170,8 +170,8 @@ make PG_CONFIG=/opt/pgpro/ent-15/bin/pg_config python_tests
 - **pg_uprobe.trace_file_limit** - Limit in megabytes for the session trace results file. Default: 16 MB
 - **pg_uprobe.trace_write_mode** - Output format for session tracing. Supported values: "text", "json". Default: json
 - **pg_uprobe.trace_lwlocks_for_each_node** - If `true`, LWLock statistics will be reset after each `Executor Node` execution; otherwise, statistics will be reset after the `PortalRun` function completes. Default: `true`
-- **pg_uprobe.write_only_sleep_lwlocks_stat** - If true, LWLock statistics will only be written in case of lock waits; otherwise, statistics for all acquired LWLocks will be written. Default: true
-
+- **pg_uprobe.write_only_sleep_lwlocks_stat** - If `true`, LWLock statistics will only be written in case of lock waits; otherwise, statistics for all acquired LWLocks will be written. Default: true
+- **pg_uprobe.trace_wait_events_in_crit_section** - If `true`, we will trace wait events inside PostgreSQL source code Critical Sections. To trace a wait event we need to do a memory allocation, if it fails inside critial section PostgreSQL will crash with PANIC error. Default: `true`;
 
 ## Usage
 
@@ -342,6 +342,7 @@ make PG_CONFIG=/opt/pgpro/ent-15/bin/pg_config python_tests
 - **pg_uprobe.trace_write_mode** - Формат вывода информации для трассирования сеанса. Поддерживаемые значения: "text", "json". По умолчанию: `json`
 - **pg_uprobe.trace_lwlocks_for_each_node** - Если `true`, статистика по LWLock будет сбрасываться после выполнения каждого `Executor Node;`, иначе статистика будет сбрасываться после завершения функции `PortalRun`. По умолчанию: `true`
 - **pg_uprobe.write_only_sleep_lwlocks_stat** - Если `true`, статистика по LWLock будет писаться только в случае ожидания блокировки, иначе будет писаться статистика по всем LWLock, которые были захвачены. По умолчанию: `true`
+- **pg_uprobe.trace_wait_events_in_crit_section** - Если `true`, то трассируем и события ожидания в критических секциях кода PostgreSQL. Для трассировки может делаться алокация памяти, если она завершится неудачей и мы будет в критической секции, то PostgreSQL завершится с ошибкой PANIC. Значение по умолчанию `true`.
 
 ## Использование
 
