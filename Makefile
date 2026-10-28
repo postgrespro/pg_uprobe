@@ -39,7 +39,14 @@ DATA = pg_uprobe--0.3.sql
 
 REGRESS = pg_uprobe
 
+PM_ARCH := $(shell uname)
+
 SHLIB_LINK += $(filter -lm, $(LIBS))
+
+ifeq ($(PM_ARCH), FreeBSD)
+SHLIB_LINK += -lprocstat
+endif
+
 EXTRA_CLEAN = node_names.h
 
 ifdef USE_PGXS
